@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,libsmtplib.so -o libsmtplib.so CMakeFiles/smtplib.dir/SMTPConnection.cpp.o CMakeFiles/smtplib.dir/EventData.cpp.o CMakeFiles/smtplib.dir/SMTPState.cpp.o 

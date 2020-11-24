@@ -1,0 +1,12 @@
+#include "SMTPState.h"
+#include <iostream>
+
+class SMTPInit : public SMTPState {
+public:
+  void Action() override;
+};
+
+void SMTPInit::Action() {
+  std::cout << "hello from Init Action()" << std::endl;
+}
+  

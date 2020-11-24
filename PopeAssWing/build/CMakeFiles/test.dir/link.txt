@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/test.dir/test.cpp.o  -o test  -Wl,-rpath,/home/ucers/Ting/Semester3/Softwareteknologi/PopeAssWing/build:/home/ucers/anaconda3/lib libsmtplib.so /home/ucers/anaconda3/lib/libzmq.so 

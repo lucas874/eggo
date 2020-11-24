@@ -1,0 +1,4 @@
+/home/ucers/Ting/Semester3/Softwareteknologi/PopeAssWing/build/CMakeFiles/rebuild_cache.dir
+/home/ucers/Ting/Semester3/Softwareteknologi/PopeAssWing/build/CMakeFiles/edit_cache.dir
+/home/ucers/Ting/Semester3/Softwareteknologi/PopeAssWing/build/CMakeFiles/test.dir
+/home/ucers/Ting/Semester3/Softwareteknologi/PopeAssWing/build/CMakeFiles/smtplib.dir
