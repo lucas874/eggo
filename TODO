@@ -1,0 +1,14 @@
+
+
+Top server, poll, gør det på den "rigtige" måde.
+
+Konsistent reply()
+
+Sørg for at alle funktioner tager højde for markedAsDeleted. 
+
+Lagring af mails og organisering af indbakker - hvordan bliver disse konfigurationer gemt permanent?:w
+
+
+Ryd op.
+
+ 
