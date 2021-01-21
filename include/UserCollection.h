@@ -9,6 +9,10 @@ public:
   UserCollection(){};
   void addUser(User*);
   void removeUser(User*);
+  int addUser(std::string, std::string);
+  int removeUser(std::string, std::string);
+
+
   User* LookUp(std::string);
   void addMailToInbox(User*, PieceOfMail*);
 

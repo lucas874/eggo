@@ -18,6 +18,7 @@ add_library(mailuserlib SHARED
   src/PieceOfMail.cpp  
   src/UserCollection.cpp
   src/user.cpp
+  src/editUserCollection.cpp
   )
 
 add_executable(SMTPclient SMTPclient.cpp)

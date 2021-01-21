@@ -12,6 +12,7 @@
 #include <string>
 //#include <zmq.hpp>
 #include <vector> 
+#include <thread> 
 
 class SMTPState;
 

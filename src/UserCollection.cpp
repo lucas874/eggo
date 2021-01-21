@@ -1,13 +1,5 @@
 #include "UserCollection.h"
 
-/*UserCollection::UserCollection() 
-        : context(1)
-	, socket(context, zmq::socket_type::rep)
-{
-	socket.bind("tcp://*:50002");
-}
-*/
-
 void UserCollection::addUser(User* u) {
 	umap.insert({u->getName(), u});
 }
@@ -15,6 +7,30 @@ void UserCollection::addUser(User* u) {
 void UserCollection::removeUser(User* u) {
 	umap.erase(u->getName());
 
+}
+
+int UserCollection::addUser(std::string name, std::string password) {
+	if(LookUp(name) != nullptr)
+		return -1;
+	else {
+		User *newuser = new User(name, password);
+
+		umap.insert({name, newuser});
+	}
+	return 0;
+}
+
+int UserCollection::removeUser(std::string name, std::string password) {
+	User *toBeRemoved = LookUp(name);
+	if(toBeRemoved == nullptr)
+		return -1;
+	else {
+		if(password.compare(toBeRemoved->getPass()) != 0)
+			return -2;
+		else
+			umap.erase(name);
+	}
+	return 0;
 }
 
 User* UserCollection::LookUp(std::string username) {

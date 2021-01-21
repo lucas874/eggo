@@ -108,3 +108,12 @@
 #define POP_STATE_AUTH 0
 #define POP_STATE_TRAN 1
 #define POP_STATE_UPDATE 2
+
+/*
+ * EditUser constants
+ */ 
+
+#define EDIT_USER_ADDU "ADDU"
+#define EDIT_USER_REMU "REMU"
+#define EDIT_USER_QUIT "QUIT"
+

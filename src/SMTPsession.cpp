@@ -24,7 +24,7 @@ SMTPsession::SMTPsession(std::vector<SMTPState*> v, UserCollection* u, struct co
 SMTPsession::~SMTPsession() {
 	for(int i=0; i < 7; i++)
 		delete states[i];
-	//delete this;
+	
 }
 void SMTPsession::Run() {
 	while(run) {
@@ -47,7 +47,7 @@ void SMTPsession::Run() {
 	}
 	sleep(1);
 	
-	}
+	}	
 	delete this;
 }
     
