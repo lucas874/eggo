@@ -34,7 +34,7 @@ class POPtransaction : public POPstate {
 		void Action(POPsession* ps, Event* e) override;
   		void ChangeState(POPsession* ps, int n) override;
   		int getStateNo() override; 
-
+		int getDeletedSizeOctets(POPsession* ps);
 
 
 	private:

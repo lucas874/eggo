@@ -15,6 +15,6 @@ class EditUsers {
 	private:
 	UserCollection *uc;
 	struct connection* c;
-	bool run = false;
+	bool run = true;
 };
 

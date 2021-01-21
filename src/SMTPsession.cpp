@@ -45,7 +45,7 @@ void SMTPsession::Run() {
 	    	ChangeState(ed);
 	    	_state->Action(this, ed);
 	}
-	sleep(1);
+	//sleep(1);
 	
 	}	
 	delete this;
@@ -193,6 +193,8 @@ SMTP_event* SMTPsession::ProcessRequest(std::string buffer) {
 	   if(buffer.substr(0,5).compare("\r\f.\r\f") == 0)
 		   e = HELO;
    }
+   else
+	   e = NOOP;
    
    SMTP_event *event = new SMTP_event(e, data);
 

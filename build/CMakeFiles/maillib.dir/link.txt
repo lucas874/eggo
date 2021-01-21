@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libmaillib.so -o libmaillib.so CMakeFiles/maillib.dir/src/SMTPsession.cpp.o CMakeFiles/maillib.dir/src/SMTP_event.cpp.o CMakeFiles/maillib.dir/src/SMTP_States.cpp.o CMakeFiles/maillib.dir/src/POPstates.cpp.o CMakeFiles/maillib.dir/src/POPsession.cpp.o CMakeFiles/maillib.dir/src/event.cpp.o CMakeFiles/maillib.dir/src/top.cpp.o 

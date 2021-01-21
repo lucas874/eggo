@@ -16,7 +16,7 @@ class Event {
 	private:
 		enum POP_Events _event;
 		std::string _data;
-		int stateNumbers[9]; 
+		int stateNumber; 
 };
 
 #endif

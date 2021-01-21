@@ -84,8 +84,9 @@
 #define RETR_ERR 13
 #define DELE_OK 14
 #define DELE_ERR 15
-
-
+#define GREETING 16
+#define REPLY_OK 17
+#define REPLY_ERR 18
 /*
  * Pop Commands
  */

@@ -50,14 +50,14 @@ void Top::listen() {
 			int size = connection2->socket.recv(msg, 255, 0);
 			if(size != -1) {
 				POPsession* session = createPOPsession();
-				session->Reply(220);
+				session->Reply(GREETING);
 				session->Run();
 			}
 		}
 		// Ask if anything has been received on connection2
 		// If so instantiate POPsession.
 		if(items[2].revents & ZMQ_POLLIN) {
-			int size = connection2->socket.recv(msg, 255, 0);
+			int size = connection3->socket.recv(msg, 255, 0);
 			if(size != -1) {
 				EditUsers* session = new EditUsers(usercollection, connection3);
 				session->Reply(0);

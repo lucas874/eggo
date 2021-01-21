@@ -19,10 +19,15 @@ void POPsession::Run() {
     		std::cout << "Received " << request << std::endl;
 
         	Event *e = ProcessRequest(request);
-		currentevent = e;
-	    	ChangeState(e);
-	    	currentState->Action(this, e);
-		sleep(1);
+
+		if(e->getEventNo() == POP_NOOP)
+		       Reply(REPLY_OK);
+		else {	
+			currentevent = e;
+	    		ChangeState(e);
+	    		currentState->Action(this, e);
+			//sleep(1);
+		}
 		
 	}
 	delete this;
@@ -64,6 +69,12 @@ void POPsession::Reply(int replycode) {
 		case BAD_CMD_SEQ:
 			buffer = "-ERR bad sequence of commands, try another";
 			break;
+		case GREETING:
+			buffer = "localhost POP3 service ready";
+			break;
+		case REPLY_OK:
+			buffer = "+OK ";
+			break;
 	        default:
 			buffer = "Command not understood";
 			break;
@@ -77,26 +88,16 @@ void POPsession::Reply(int replycode, std::string reply) {
 	std::string buffer;
 
 	switch(replycode) {
-		case STAT_OK:
-			buffer = "+OK ";
-			buffer += reply;	
-		case LIST_OK:
+		case REPLY_OK:
 			buffer = "+OK ";
 			buffer += reply;
-			break;
-		case LIST_ERR:
-			buffer = "-ERR ";
-			buffer += reply;
-			break;
-		case RETR_OK:
-			buffer = "+OK ";
-			buffer += reply;
-			break;
-		case RETR_ERR:
+			break;	
+		case REPLY_ERR:
 			buffer = "-ERR ";
 			buffer += reply;
 			break;
 	}
+	buffer += "\n";
 	_connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 
 }
@@ -109,7 +110,7 @@ Event* POPsession::ProcessRequest(std::string buffer) {
 	
 	std::string data;
 	if(buffer.size() > 4)
-		data = buffer.substr(5, buffer.length()-4);
+		data = buffer.substr(5);
 	
 	if(CMD.compare("USER") == 0)
 		e = P_USER;
@@ -127,6 +128,10 @@ Event* POPsession::ProcessRequest(std::string buffer) {
 		e = P_RSET;
 	else if(CMD.compare("QUIT") == 0)
 		e = P_QUIT;
+	else if(CMD.compare("NOOP") == 0) 
+		e = P_NOOP;
+	else 
+		e = P_NOOP;
 
 	if(currentState->getStateNo() == 0 && e == P_QUIT) {
 		Reply(QUIT_AUTH_OK);

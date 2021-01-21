@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/SMTPclient.dir/SMTPclient.cpp.o  -o SMTPclient  -Wl,-rpath,/usr/local/lib /usr/local/lib/libzmq.so.5.2.4 -lpthread /usr/lib/x86_64-linux-gnu/libsodium.so -lrt 

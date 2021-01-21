@@ -37,6 +37,8 @@ int User::getInboxSizeOctets() {
 }
 
 int User::getMailSize(int index) {
+	if(inbox.size() == 0)
+		return -1;
 	if(index < 0 || index >= inbox.size())
 		return -1;
 	return sizeof(inbox[index]->getContent());
