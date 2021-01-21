@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libmailuserlib.so -o libmailuserlib.so CMakeFiles/mailuserlib.dir/src/PieceOfMail.cpp.o CMakeFiles/mailuserlib.dir/src/UserCollection.cpp.o CMakeFiles/mailuserlib.dir/src/user.cpp.o CMakeFiles/mailuserlib.dir/src/editUserCollection.cpp.o 
