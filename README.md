@@ -15,6 +15,8 @@ How to build:
     cmake ..<br>
     sudo make -j4 install<br>
     
+    cd ~<br>
+    
     git clone https://github.com/zeromq/cppzmq.git<br>
     cd cppzmq<br>
     mkdir build<br>
