@@ -1,5 +1,5 @@
-#ifndef SMTP_STATES_H
-#define SMTP_STATES_H
+#ifndef _SMTP_STATES_H_
+#define _SMTP_STATES_H_
 
 #include "SMTPstate.h"
 #include "Globals.h"
@@ -16,7 +16,7 @@
 class SMTPInit : public SMTPState {
 public:
 	// State action
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
 
 	// State transitioning 
 	void ChangeState(SMTPsession* sc, int n) override;
@@ -36,7 +36,7 @@ private:
 class SMTPHelo : public SMTPState {
 public:
 	// State action
-	void Action(SMTPsession* sc, SMTP_event* e) override; 
+	void Action(SMTPsession* sc, SMTPevent* e) override; 
 	
 	// State transitioning 
 	void ChangeState(SMTPsession* sc, int n) override;
@@ -56,7 +56,7 @@ private:
 class SMTPMail : public SMTPState {
 public:
 	// Do stuff
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
 
 	// State transitioning 
 	void ChangeState(SMTPsession* sc, int n) override;  
@@ -77,7 +77,7 @@ private:
 class SMTPRcpt : public SMTPState {
 public:
 	// Do stuff
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
 
 	// State transitioning
   	void ChangeState(SMTPsession* sc, int n) override;
@@ -97,7 +97,7 @@ private:
 class SMTPData : public SMTPState {
 public:
 	// Do stuff
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
   	
 	// Change state
 	void ChangeState(SMTPsession* sc, int n) override;
@@ -118,7 +118,7 @@ private:
 class SMTPRset : public SMTPState {
 public:
 	// Do stuff 
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
   	
 	// Change state
 	void ChangeState(SMTPsession* sc, int n) override;
@@ -137,7 +137,7 @@ private:
 class SMTPQuit : public SMTPState {
 public:
 	// Do stuff
-	void Action(SMTPsession* sc, SMTP_event* e) override;
+	void Action(SMTPsession* sc, SMTPevent* e) override;
   	
 	// Change state
 	void ChangeState(SMTPsession* sc, int n) override;

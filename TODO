@@ -2,9 +2,9 @@
 
 Top server, poll, gør det på den "rigtige" måde. DONE
 
-Konsistent reply()
+Konsistent reply(), Bestem hvor meget der skal være i state action og hvor meget der skal være i reply
 
-Sørg for at alle funktioner tager højde for markedAsDeleted. 
+Sørg for at alle funktioner tager højde for markedAsDeleted. DONE
 
 Lagring af mails og organisering af indbakker - hvordan bliver disse konfigurationer gemt permanent?:w
 

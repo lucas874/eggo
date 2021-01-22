@@ -1,7 +1,7 @@
 #include "SMTPsession.h"
 #include "POPsession.h"
 #include "POPstates.h"
-#include "SMTP_states.h"
+#include "SMTPstates.h"
 #include "editUserCollection.h"
 
 class Top {

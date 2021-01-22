@@ -7,8 +7,8 @@ include_directories(include)
 
 add_library(maillib SHARED
   src/SMTPsession.cpp
-  src/SMTP_event.cpp 
-  src/SMTP_States.cpp
+  src/SMTPevent.cpp 
+  src/SMTPstates.cpp
   src/POPstates.cpp
   src/POPsession.cpp
   src/event.cpp

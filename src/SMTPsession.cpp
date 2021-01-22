@@ -1,58 +1,43 @@
 #include "SMTPsession.h"
 
-
-/* TODO:
- * Check length of received string
- * User class
- * Piece of mail class
- * User "database", with has table mapping to directories
- *
- * In ProcessRequest  NOOP event with event number assigned to current state,
- * so that ChangeState doesn't do anything?  Instead of if statement in run?
- */
 SMTPsession::SMTPsession(std::vector<SMTPState*> v, UserCollection* u, struct connection* c) 
 	: states(v) 
 	, _state(v[0]) 
 	, _uc(u) 
 	, _connection(c) 	
-{
-		//socket.bind("tcp://*:50000");
+{	
    		currentData.clear();
    		curmail = nullptr;
 }
 
 SMTPsession::~SMTPsession() {
 	for(int i=0; i < 7; i++)
-		delete states[i];
-	
+		delete states[i];	
 }
+
+
 void SMTPsession::Run() {
 	while(run) {
-      
-    	zmq::message_t rawrequest;
-    	_connection->socket.recv(rawrequest, zmq::recv_flags::none);
-    	std::string request = rawrequest.to_string();
-    	std::cout << "Received " << request << std::endl;
-
-    /*if(_state->getStateNo() == 4)
-	    _state->Action(this, request);
-	    */
-    	SMTP_event *ed = ProcessRequest(request);
-    	if(ed->getEventNo() == 7)
-	    	Reply(220);
-	else {
-		currentevent = ed;
-	    	ChangeState(ed);
-	    	_state->Action(this, ed);
-	}
-	//sleep(1);
+		zmq::message_t rawrequest;
+    		_connection->socket.recv(rawrequest, zmq::recv_flags::none);
+    		std::string request = rawrequest.to_string();
+    		std::cout << "Received " << request << std::endl;
 	
-	}	
-	delete this;
+		SMTPevent *ed = ProcessRequest(request);
+	
+		if(ed->getEventNo() == 7)
+			Reply(220);
+		else {
+			currentevent = ed;
+	    		ChangeState(ed);
+	    		_state->Action(this, ed);
+		}
+	}
+	Close();
 }
     
 void SMTPsession::Close() {
-  std::cout << "hej";
+	this->~SMTPsession();
 }
 
 
@@ -128,75 +113,55 @@ void SMTPsession::Reply(int replycode) {
   _connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 }
 
-SMTP_event* SMTPsession::ProcessRequest(std::string buffer) {
-   std::string CMD(4, ' ');
+SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
+	std::string CMD(4, ' ');
    
-   std::string data;
-   if(buffer.size() > 4)
-	   data = buffer.substr(5);
+   	std::string data;
+
+   	if(buffer.size() > 4)
+		data = buffer.substr(5);
 
     
-   for(int i = 0; i < 4; i++)
-     CMD[i] = buffer[i];
+   	for(int i = 0; i < 4; i++)
+		CMD[i] = buffer[i];
 
-   transform(CMD.begin(), CMD.end(), CMD.begin(), ::tolower);
+   	transform(CMD.begin(), CMD.end(), CMD.begin(), ::tolower);
 
-   enum SMTP_event_enum e;
+   	enum SMTP_event_enum e;
 
-   /*
-    * Not very good with long else if statements,
-    * but on the other hand this part of the code
-    * is unlikely to change (changes if RFC-821 changes, which it wont RFC aren't changed,
-    * new ones are published). RFC-821 has been obsoleted... 
-    * and with 8 cases it is kind of ok. 
-    */
-   if(CMD.compare("helo") == 0) {
-     //do something
-     e = HELO;
-     
-   }
-   else if(CMD.compare("ehlo") == 0) {
-     e = HELO;
-     
-   }
-   else if(CMD.compare("mail") == 0) {
-     e = MAIL;
-     
-   }
-   else if(CMD.compare("rcpt") == 0) {
-     e = RCPT;
-     
-   }
-   else if(CMD.compare("data") == 0) {
-     e = DATA;
-     
-   }
-   else if(CMD.compare("rset") == 0) {
-     e = RSET;
-     
-   }
-   else if(CMD.compare("noop") == 0) {
-     e = NOOP;
-     //Reply(250);
-     
-     // NOOP doesn't cause a state transition
-     // this value is never used
-     
-   }
-   else if(CMD.compare("quit") == 0) {
-     e = QUIT;
-     
-   }
-   else if(_state->getStateNo() == 4) {
-	   e = DATA;
-	   data = buffer;
-	   if(buffer.substr(0,5).compare("\r\f.\r\f") == 0)
+   	/*
+    	 * Not very good with long else if statements,
+    	 * but on the other hand this part of the code
+    	 * is unlikely to change (changes if RFC-821 changes, which it wont RFC aren't changed,
+    	 * new ones are published). RFC-821 has been obsoleted... 
+    	 * and with 8 cases it is kind of ok. 
+    	 */
+   	if(CMD.compare("helo") == 0)
+     		e = HELO;
+	else if(CMD.compare("ehlo") == 0)
+     		e = HELO;
+   	else if(CMD.compare("mail") == 0)
+     		e = MAIL;
+   	else if(CMD.compare("rcpt") == 0)
+     		e = RCPT;
+   	else if(CMD.compare("data") == 0)
+     		e = DATA;
+	else if(CMD.compare("rset") == 0)
+     		e = RSET; 
+   	else if(CMD.compare("noop") == 0) 
+     		e = NOOP;
+	else if(CMD.compare("quit") == 0)
+	       e = QUIT;
+   	else if(_state->getStateNo() == 4) {
+		e = DATA;
+	   	data = buffer;
+		if(buffer.substr(0,5).compare("\r\f.\r\f") == 0)
 		   e = HELO;
-   }
-   else
-	   e = NOOP;
+	}
+	else
+		e = NOOP;
    
-   SMTP_event *event = new SMTP_event(e, data);
+   SMTPevent *event = new SMTPevent(e, data);
 
    return event;
 }
@@ -205,7 +170,7 @@ void SMTPsession::ChangeState(SMTPState* s) {
   _state = s;
 }
 
-void SMTPsession::ChangeState(SMTP_event* e) {
+void SMTPsession::ChangeState(SMTPevent* e) {
 
   //_state = states[e->getEventNo()];
   _state->ChangeState(this, e->getEventNo());

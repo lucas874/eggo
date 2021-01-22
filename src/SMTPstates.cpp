@@ -1,7 +1,7 @@
-#include "SMTP_states.h"
+#include "SMTPstates.h"
 #include "SMTPsession.h"
 
-void SMTPInit::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {
 	sc->Reply(220);
 }
 
@@ -14,7 +14,7 @@ int SMTPInit::getStateNo() {
 	return stateNo;
 }
 
-void SMTPHelo::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {
 	
 	
 	std::string str = sc->getCurData().substr(5);
@@ -33,7 +33,7 @@ int SMTPHelo::getStateNo() {
 }
 
 
-void SMTPMail::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
   std::cout << "hello from Mail Action()" << std::endl;
   std::string str = sc->getCurData();
   int i = 0;
@@ -59,7 +59,7 @@ int SMTPMail::getStateNo() {
 	return stateNo;
 }
 
-void SMTPRcpt::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
   std::cout << "hello from Rcpt Action()" << std::endl;
   std::string str = sc->getCurData();
   std::string domain;
@@ -93,7 +93,7 @@ int SMTPRcpt::getStateNo() {
 	return stateNo;
 }
 
-void SMTPData::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 	if(sc->curmail->getContent().empty()) {
 		std::cout << "hello from Data Action()" << std::endl;
 		sc->curmail->append("Fra:\nTil:");	
@@ -114,7 +114,7 @@ int SMTPData::getStateNo() {
 	return stateNo;
 }
 
-void SMTPRset::Action(SMTPsession* sc, SMTP_event* e) {
+void SMTPRset::Action(SMTPsession* sc, SMTPevent* e) {
   std::cout << "hello from Rset Action()" << std::endl;
   sc->Reply(250);
 }
@@ -127,9 +127,7 @@ int SMTPRset::getStateNo() {
 	return stateNo;
 }
 
-void SMTPQuit::Action(SMTPsession* sc, SMTP_event* e) {
-  std::cout << "hello from Quit Action()" << std::endl;
-
+void SMTPQuit::Action(SMTPsession* sc, SMTPevent* e) {
   for(auto &itr : sc->rcpt) {
 	  sc->_uc->addMailToInbox(itr, sc->curmail); 
   }

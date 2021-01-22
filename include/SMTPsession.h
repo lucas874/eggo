@@ -3,64 +3,79 @@
 
 #include "SMTPstate.h"
 #include "Globals.h"
-#include "SMTP_event.h"
+#include "SMTPevent.h"
 #include "UserCollection.h"
 #include "PieceOfMail.h"
 #include "connection.h"
 #include <iostream>
 #include <unistd.h> // sleep
 #include <string>
-//#include <zmq.hpp>
 #include <vector> 
-#include <thread> 
 
-class SMTPState;
-
+/*
+ * Class definition of class representing an SMTP session.
+ * Built as a FSM. Has an array of states. Each state is 
+ * implemented as its own class, that inherits from the 
+ * same state interface. 
+ */
 class SMTPsession {
- public:
-  SMTPsession(std::vector<SMTPState*> v, UserCollection* u, struct connection*);
-  ~SMTPsession();
-  void Run();
-  void Close();
-  void Reply(int replycode);
-  SMTP_event* ProcessRequest(std::string buffer);
-  void processTextLine(std::string buffer);
-  void StateAction();
-  void ChangeState(SMTP_event*);
-  void setSenderDomain(std::string);
-  void setSenderUsername(std::string);
-  void setRcptDomain(std::string);
-  void setRcptUsername(std::string);
-  std::string getCurData();
-  
+	public:
+		// Constructor takes vector of states, collection of user and a connection.
+		// The connection struct contains socket and context. 
+		SMTPsession(std::vector<SMTPState*>, UserCollection*, struct connection*);
+  		~SMTPsession();
 
- private:
-  friend class SMTPState;
-  friend class SMTPInit;
-  friend class SMTPHelo;
-  friend class SMTPMail;
-  friend class SMTPRcpt;
-  friend class SMTPData;
-  friend class SMTPQuit;
-  friend class SMTPRset;
+		// Runs throughout session
+  		void Run();
 
-  void ChangeState(SMTPState*); 
-  SMTPState* _state;
-  UserCollection* _uc;
-  std::vector<SMTPState*> states;
-  SMTP_event* currentevent; 
-  zmq::context_t context;
-  zmq::socket_t socket;
-  std::string senderDomain;
-  std::string senderUsername;
-  std::string rcptDomain;
-  std::vector<std::string> rcptUsername;
-  std::vector<User*> rcpt;
-  PieceOfMail* curmail;
-  std::string currentData;
-  struct connection *_connection;
-  bool run = true;
-  
+		// End session with client. 
+  		void Close();
+
+		// Send reply to client
+  		void Reply(int replycode);
+
+		// Parse string received from socket and generate 
+		// an event that the session FSM understands. 
+  		SMTPevent* ProcessRequest(std::string buffer);	
+  		
+		// Call state function
+		void StateAction();
+
+		// Change state, SMTPevent* contains
+		// enum corresponding to next state and
+		// other data. This way change of state
+		// is changing index in an array
+  		void ChangeState(SMTPevent*);
+  		void setSenderDomain(std::string);
+  		void setSenderUsername(std::string);
+  		void setRcptDomain(std::string);
+  		void setRcptUsername(std::string);
+  		std::string getCurData();
+	
+	private:
+		friend class SMTPState;
+  		friend class SMTPInit;
+  		friend class SMTPHelo;
+  		friend class SMTPMail;
+  		friend class SMTPRcpt;
+  		friend class SMTPData;
+  		friend class SMTPQuit;
+  		friend class SMTPRset;
+
+  		void ChangeState(SMTPState*); 
+  		SMTPState* _state;
+  		UserCollection* _uc;
+  		std::vector<SMTPState*> states;
+  		SMTPevent* currentevent; 
+  		std::string senderDomain;
+  		std::string senderUsername;
+  		std::string rcptDomain;
+  		std::vector<std::string> rcptUsername;
+  		std::vector<User*> rcpt;
+  		PieceOfMail* curmail;
+  		std::string currentData;
+  		struct connection *_connection;
+  		bool run = true;
 };
 
 #endif
