@@ -18,15 +18,14 @@ void POPsession::Run() {
     		std::string request = rawrequest.to_string();
     		std::cout << "Received " << request << std::endl;
 
-        	Event *e = ProcessRequest(request);
+        	POPevent *e = ProcessRequest(request);
 
 		if(e->getEventNo() == POP_NOOP)
 		       Reply(REPLY_OK);
 		else {	
 			currentevent = e;
 	    		ChangeState(e);
-	    		currentState->Action(this, e);
-			//sleep(1);
+	    		currentState->Action(this, e);	
 		}
 		
 	}
@@ -102,7 +101,7 @@ void POPsession::Reply(int replycode, std::string reply) {
 
 }
 
-Event* POPsession::ProcessRequest(std::string buffer) {
+POPevent* POPsession::ProcessRequest(std::string buffer) {
 
 	enum POP_Events e;
 
@@ -138,11 +137,11 @@ Event* POPsession::ProcessRequest(std::string buffer) {
 	       	// Handle this. Close properly, destroy current POPsession object.	
 	}
 
-	Event* event = new Event(e, data);
+	POPevent* event = new POPevent(e, data);
 	return event;	
 }
 
-void POPsession::ChangeState(Event* e)  {
+void POPsession::ChangeState(POPevent* e)  {
        currentState->ChangeState(this, e->getStateNo());
 }
 

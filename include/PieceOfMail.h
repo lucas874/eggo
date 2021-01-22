@@ -1,5 +1,5 @@
-#ifndef PIECEOFMAIL_H_
-#define PIECEOFMAIL_H_
+#ifndef _PIECEOFMAIL_H_
+#define _PIECEOFMAIL_H_
 
 #include <vector>
 #include <string>
@@ -20,6 +20,9 @@ class PieceOfMail {
 	 std::string content;
  public:
 	 PieceOfMail(){};
+
+	 // Set To, From, Subject
+	 void setHeader();
 
 	 // Add content to email
 	 void append(std::string);

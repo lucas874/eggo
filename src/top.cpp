@@ -3,28 +3,30 @@
 Top::Top(UserCollection* u)
 	: usercollection(u) 
 	{
-	connection1 = new struct connection;
-	connection2 = new struct connection;
-	connection3 = new struct connection;
-	connection1->context = zmq::context_t(1);
-	connection1->socket = zmq::socket_t(connection1->context, zmq::socket_type::rep); 
+		// Set up connection to network
+		connection1 = new struct connection;
+		connection2 = new struct connection;
+		connection3 = new struct connection;
+		connection1->context = zmq::context_t(1);
+		connection1->socket = zmq::socket_t(connection1->context, zmq::socket_type::rep); 
 	
-	connection2->context = zmq::context_t(1);
-	connection2->socket = zmq::socket_t(connection2->context, zmq::socket_type::rep); 
+		connection2->context = zmq::context_t(1);
+		connection2->socket = zmq::socket_t(connection2->context, zmq::socket_type::rep); 
 	
-	connection3->context = zmq::context_t(1);
-	connection3->socket = zmq::socket_t(connection3->context, zmq::socket_type::rep); 
+		connection3->context = zmq::context_t(1);
+		connection3->socket = zmq::socket_t(connection3->context, zmq::socket_type::rep); 
 	
-	connection1->socket.bind("tcp://*:50000");
-   	connection2->socket.bind("tcp://*:50001");
-	connection3->socket.bind("tcp://*:50002");	
+		connection1->socket.bind("tcp://*:50000");
+   		connection2->socket.bind("tcp://*:50001");
+		connection3->socket.bind("tcp://*:50002");	
 }
 
 void Top::listen() {
 	while(1) {
 		char msg[256];
 
-		// For listening on both sockets without blocking control flow. 
+		// For listening on all sockets without blocking control flow, while listening
+		// on one of them. 
 		zmq_pollitem_t items [] = {
 			{ connection1->socket, 0, ZMQ_POLLIN, 0 },
 			{ connection2->socket, 0, ZMQ_POLLIN, 0 },

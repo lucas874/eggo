@@ -16,7 +16,10 @@
  * Class definition of class representing an SMTP session.
  * Built as a FSM. Has an array of states. Each state is 
  * implemented as its own class, that inherits from the 
- * same state interface. 
+ * same state interface.
+ *
+ * Instantiated when a connection on the socket for SMTP 
+ * session is established.  
  */
 class SMTPsession {
 	public:
@@ -46,13 +49,27 @@ class SMTPsession {
 		// other data. This way change of state
 		// is changing index in an array
   		void ChangeState(SMTPevent*);
+
+		// Set sender domain for current session
   		void setSenderDomain(std::string);
+
+		// Send sender username for current session
   		void setSenderUsername(std::string);
+
+		// Set domain for a recipient
   		void setRcptDomain(std::string);
+
+		// Set username for a recipient 
   		void setRcptUsername(std::string);
+
+		// Used to access data from events
   		std::string getCurData();
 	
 	private:
+		/*
+		 * State classes are friends of 
+		 * SMTPsession so they can access private fields. 
+		 */
 		friend class SMTPState;
   		friend class SMTPInit;
   		friend class SMTPHelo;
@@ -62,19 +79,40 @@ class SMTPsession {
   		friend class SMTPQuit;
   		friend class SMTPRset;
 
-  		void ChangeState(SMTPState*); 
-  		SMTPState* _state;
+		// Current state of session	
+  		SMTPState* currentState;
+
+		// Pointer to collection of users
   		UserCollection* _uc;
+
+		// Array of states
   		std::vector<SMTPState*> states;
-  		SMTPevent* currentevent; 
+
+		// Current event
+  		SMTPevent* currentevent;
+
+		// Sender domain of current session	
   		std::string senderDomain;
+
+		// Sender username
   		std::string senderUsername;
-  		std::string rcptDomain;
+
+		// It's possible to have multiple recipients
+		// We can only deliver mails to the domain of 
+		// server... currently
+		std::vector<std::string> rcptDomain;
   		std::vector<std::string> rcptUsername;
   		std::vector<User*> rcpt;
+
+		// Instantiated if MAIL command is received
   		PieceOfMail* curmail;
   		std::string currentData;
+
+		// Contains socket and context
   		struct connection *_connection;
+
+		// Main loop runs while this is true
+		// false when QUIT command is received
   		bool run = true;
 };
 

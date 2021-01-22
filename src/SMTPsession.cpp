@@ -1,8 +1,9 @@
 #include "SMTPsession.h"
 
+// Initialiaze state vector, initial state, collection of user and connection
 SMTPsession::SMTPsession(std::vector<SMTPState*> v, UserCollection* u, struct connection* c) 
 	: states(v) 
-	, _state(v[0]) 
+	, currentState(v[0]) 
 	, _uc(u) 
 	, _connection(c) 	
 {	
@@ -10,12 +11,13 @@ SMTPsession::SMTPsession(std::vector<SMTPState*> v, UserCollection* u, struct co
    		curmail = nullptr;
 }
 
+// Delete states, allocated on heap
 SMTPsession::~SMTPsession() {
-	for(int i=0; i < 7; i++)
-		delete states[i];	
+	for(auto &itr : states)
+		delete itr;	
 }
 
-
+// Runs until QUIT command is issued
 void SMTPsession::Run() {
 	while(run) {
 		zmq::message_t rawrequest;
@@ -25,17 +27,18 @@ void SMTPsession::Run() {
 	
 		SMTPevent *ed = ProcessRequest(request);
 	
-		if(ed->getEventNo() == 7)
+		if(ed->getEventNo() == SMTP_NOOP)
 			Reply(220);
 		else {
 			currentevent = ed;
 	    		ChangeState(ed);
-	    		_state->Action(this, ed);
+	    		currentState->Action(this, ed);
 		}
 	}
 	Close();
 }
-    
+
+// Call destructor
 void SMTPsession::Close() {
 	this->~SMTPsession();
 }
@@ -58,13 +61,13 @@ void SMTPsession::Reply(int replycode) {
     		  buffer = "250 Requested mail action okay, completed";
     		  break;
   	  case USER_NOT_LOCAL_FORWARDED:
-    		  buffer = "User not local; will forward to <forward-path>";
+    		  buffer = "User not local; will not be forwarded";
     		  break;
 	  case START_MAIL_INPUT:
-		  buffer = "Start mail input end with <CRLF>.<CRLF>";
+		  buffer = "354 Start mail input end with <CRLF>.<CRLF>";
     		  break;
 	  case SERVICE_NA_CLOSING:
-		  buffer = " localhost Service not available, closing transmission channel";
+		  buffer = "localhost Service not available, closing transmission channel";
 		  break;
 	  case FAIL_MAILBOX_UNAVAILABLE:
 		  buffer = "Mailbox unavailable";
@@ -113,6 +116,9 @@ void SMTPsession::Reply(int replycode) {
   _connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 }
 
+
+// Read string received from network and turn it into 
+// a type that the FSM understands
 SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
 	std::string CMD(4, ' ');
    
@@ -152,7 +158,7 @@ SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
      		e = NOOP;
 	else if(CMD.compare("quit") == 0)
 	       e = QUIT;
-   	else if(_state->getStateNo() == 4) {
+   	else if(currentState->getStateNo() == 4) {
 		e = DATA;
 	   	data = buffer;
 		if(buffer.substr(0,5).compare("\r\f.\r\f") == 0)
@@ -160,26 +166,17 @@ SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
 	}
 	else
 		e = NOOP;
-   
-   SMTPevent *event = new SMTPevent(e, data);
+	
+	// SMTPevent with relevant enum and data 
+	SMTPevent *event = new SMTPevent(e, data);
 
-   return event;
-}
-
-void SMTPsession::ChangeState(SMTPState* s) {
-  _state = s;
+   	return event;
 }
 
 void SMTPsession::ChangeState(SMTPevent* e) {
-
-  //_state = states[e->getEventNo()];
-  _state->ChangeState(this, e->getEventNo());
+	currentState->ChangeState(this, e->getEventNo());
 }
   
-/*void SMTPsession::StateAction() {
-  _state->Action(this);
-}*/
-
 void SMTPsession::setSenderDomain(std::string s) {
   senderDomain = s;
 }
@@ -190,7 +187,7 @@ void SMTPsession::setSenderUsername(std::string s) {
 }
 
 void SMTPsession::setRcptDomain(std::string s) {
-  rcptDomain = s;
+  rcptDomain.push_back(s);
 }
 
 void SMTPsession::setRcptUsername(std::string s) {

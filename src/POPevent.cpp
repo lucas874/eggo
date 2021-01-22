@@ -1,6 +1,6 @@
-#include "event.h"
+#include "POPevent.h"
 
-Event::Event(enum POP_Events event, std::string data) {
+POPevent::POPevent(enum POP_Events event, std::string data) {
     _event = event;
     _data = data;
     if(_event < 2)
@@ -11,15 +11,15 @@ Event::Event(enum POP_Events event, std::string data) {
 	    stateNumber = POP_STATE_UPDATE;
 }
 
-std::string Event::getData() {
+std::string POPevent::getData() {
   return _data;
 }
 
-int Event::getEventNo() {
+int POPevent::getEventNo() {
   return _event;
 }
 
-int Event::getStateNo() {
+int POPevent::getStateNo() {
 	return stateNumber;
 }
 

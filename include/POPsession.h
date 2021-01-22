@@ -2,7 +2,7 @@
 #define POPSESSION_H
 
 #include "POPstate.h"
-#include "event.h"
+#include "POPevent.h"
 #include "Globals.h"
 #include "UserCollection.h"
 #include "connection.h"
@@ -14,12 +14,12 @@ class POPsession {
 		POPsession(std::vector<POPstate*>, UserCollection*, struct connection*);
 		~POPsession(){};
 		void Run();
-		void ChangeState(Event*);
+		void ChangeState(POPevent*);
 		void StateAction();
 		void Reply(int);
 		void Reply(int, std::string);
 		void Close();
-		Event* ProcessRequest(std::string buffer);	
+		POPevent* ProcessRequest(std::string buffer);	
 		void setCurrentUser(User*);
 		User* getCurrentUser();
 
@@ -35,7 +35,7 @@ class POPsession {
 		UserCollection* uc;
 		zmq::context_t context;
 		zmq::socket_t socket;
-		Event* currentevent;
+		POPevent* currentevent;
 		User* currentUser;
 		struct connection *_connection;
 

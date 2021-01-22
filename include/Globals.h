@@ -60,7 +60,7 @@
 #define STATE_DATA 4
 #define STATE_RSET 5
 #define STATE_QUIT 6
-//#define NOOP 7
+#define SMTP_NOOP 7
 
 
 

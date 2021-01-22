@@ -22,3 +22,15 @@ void PieceOfMail::setsender(std::string _sender) {
 	sender = _sender;
 }
 
+void PieceOfMail::setHeader() {
+	content.append("From: ");
+	content.append(sender);
+	content.append("\nSubject: \n");
+	content.append("To: ");
+	for(auto &i : rcpt) {
+		content.append(i);
+		content.append(" ");
+	}
+	content.append("\n");
+}
+

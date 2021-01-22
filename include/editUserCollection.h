@@ -1,3 +1,5 @@
+#ifndef _EDITUSERCOLLECTION_H_
+#define _EDITUSERCOLLECTION_H_
 #include "UserCollection.h"
 #include "connection.h"
 #include "Globals.h"
@@ -18,3 +20,4 @@ class EditUsers {
 	bool run = true;
 };
 
+#endif

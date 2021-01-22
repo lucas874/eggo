@@ -5,14 +5,10 @@
 #include <vector>
 #include "POPstate.h"
 #include "Globals.h"
-/*             0     	      1     	   2     
- * enum Event {AUTHORIZATION, TRANSACTION, UPDATE};
- *
- */
 
 class POPauthorization : public POPstate {
 	public:
-		void Action(POPsession* ps, Event* e) override;
+		void Action(POPsession* ps, POPevent* e) override;
   		void ChangeState(POPsession* ps, int n) override;
   		int getStateNo() override; 
 		bool checkUser(POPsession*, std::string);
@@ -31,7 +27,7 @@ class POPauthorization : public POPstate {
 
 class POPtransaction : public POPstate {
 	public:
-		void Action(POPsession* ps, Event* e) override;
+		void Action(POPsession* ps, POPevent* e) override;
   		void ChangeState(POPsession* ps, int n) override;
   		int getStateNo() override; 
 		int getDeletedSizeOctets(POPsession* ps);
@@ -47,7 +43,7 @@ class POPtransaction : public POPstate {
 
 class POPupdate : public POPstate {
 	public:
-		void Action(POPsession* ps, Event* e) override;
+		void Action(POPsession* ps, POPevent* e) override;
   		void ChangeState(POPsession* ps, int n) override;
   		int getStateNo() override; 
 

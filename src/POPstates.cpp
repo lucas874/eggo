@@ -1,14 +1,8 @@
 #include "POPstates.h"
 #include "POPsession.h"
 
-/*             0     	      1     	   2     
- * enum Event {AUTHORIZATION, TRANSACTION, UPDATE};
- *
- */
-
-
-void POPauthorization::Action(POPsession* ps, Event* e) {
-	std::cout << "Hello from AUTHORIZATION state" << std::endl;
+void POPauthorization::Action(POPsession* ps, POPevent* e) {
+	
 
 	if(e->getEventNo() == 0) {
 		existingUser = checkUser(ps, e->getData());
@@ -67,9 +61,9 @@ int POPtransaction::getDeletedSizeOctets(POPsession* ps) {
 	return sz;
 }
 //	       0     1     2     3     4     5     6     7     8
-//enum Events {USER, PASS, STAT, LIST, RETR, DELE, NOOP, RSET, QUIT};
+//enum POPevents {USER, PASS, STAT, LIST, RETR, DELE, NOOP, RSET, QUIT};
 
-void POPtransaction::Action(POPsession* ps, Event* e) {
+void POPtransaction::Action(POPsession* ps, POPevent* e) {
 	std::string buffer;
 	int replycode;
 
@@ -208,7 +202,7 @@ int POPtransaction::getStateNo() {
 	return stateNo;
 }
 
-void POPupdate::Action(POPsession* ps, Event* ) {
+void POPupdate::Action(POPsession* ps, POPevent* ) {
 	for(auto &i : ps->markedAsDeleted) 
 		ps->currentUser->deleteMail(i);
 	

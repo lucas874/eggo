@@ -1,13 +1,14 @@
 #include "SMTPstates.h"
 #include "SMTPsession.h"
 
+// Reply that service is ready
 void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {
 	sc->Reply(220);
 }
 
 void SMTPInit::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPInit::getStateNo() {
@@ -25,7 +26,7 @@ void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {
 
 void SMTPHelo::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPHelo::getStateNo() {
@@ -33,9 +34,8 @@ int SMTPHelo::getStateNo() {
 }
 
 
-void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
-  std::cout << "hello from Mail Action()" << std::endl;
-  std::string str = sc->getCurData();
+void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {	
+	std::string str = sc->getCurData();
   int i = 0;
   while(str[i] != '@')
     i++;
@@ -52,7 +52,7 @@ void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
 
 void SMTPMail::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPMail::getStateNo() {
@@ -86,7 +86,7 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
 
 void SMTPRcpt::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPRcpt::getStateNo() {
@@ -95,8 +95,8 @@ int SMTPRcpt::getStateNo() {
 
 void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 	if(sc->curmail->getContent().empty()) {
-		std::cout << "hello from Data Action()" << std::endl;
-		sc->curmail->append("Fra:\nTil:");	
+		
+		sc->curmail->setHeader();	
 		sc->Reply(354);
 	}
 	else {
@@ -107,7 +107,7 @@ void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 
 void SMTPData::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPData::getStateNo() {
@@ -115,13 +115,21 @@ int SMTPData::getStateNo() {
 }
 
 void SMTPRset::Action(SMTPsession* sc, SMTPevent* e) {
-  std::cout << "hello from Rset Action()" << std::endl;
-  sc->Reply(250);
+	
+	sc->senderDomain.clear();
+	sc->senderUsername.clear();
+	sc->rcpt.clear();
+	sc->rcptDomain.clear();
+	sc->rcptUsername.clear();
+	delete sc->curmail;
+	sc->currentState = sc->states[1];
+		
+	sc->Reply(250);
 }
 
 void SMTPRset::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 int SMTPRset::getStateNo() {
 	return stateNo;
@@ -137,7 +145,7 @@ void SMTPQuit::Action(SMTPsession* sc, SMTPevent* e) {
 
 void SMTPQuit::ChangeState(SMTPsession* sc, int n) {
 	if(allowedTransitions[n])
-		sc->_state = sc->states[n];
+		sc->currentState = sc->states[n];
 }
 
 int SMTPQuit::getStateNo() {

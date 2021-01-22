@@ -11,7 +11,7 @@ add_library(maillib SHARED
   src/SMTPstates.cpp
   src/POPstates.cpp
   src/POPsession.cpp
-  src/event.cpp
+  src/POPevent.cpp
   src/top.cpp
   )
 add_library(mailuserlib SHARED
