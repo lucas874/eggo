@@ -6,7 +6,30 @@ Eggo Enterprises
 
 How to build:
 
-1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library follow these steps:
+1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library two things must be downloaded and built. Open a terminal and type these commands:
+    git clone https://github.com/zeromq/libzmq.git
+    cd libzmq
+    ./autogen.sh
+    mkdir build
+    cd build 
+    cmake ..
+    sudo make -j4 install
+    
+    git clone https://github.com/zeromq/cppzmq.git
+    cd cppzmq
+    mkdir build 
+    cd build
+    cmake ..
+    sudo make -j4 install
+    
+2. If the installation of ZeroMQ was successfull we can proceed to build the email system. Type the following commands:
+    git clone https://github.com/lucas874/eggo.git --branch master
+    mkdir build
+    cd build
+    cmake ..
+    make 
+    
+  
 
 
 
