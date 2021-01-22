@@ -3,7 +3,7 @@ Software Engineering Project for CE students fall 2020, Aarhus Universitet<br>
 # Eggo Enterprises
 
 How to build:<br>
-NB. This guide assumes that the machine on which system is to be built is using a Linux operating system. Furthermore, git is used. If this is not installed on the machine this can be done using the package manager. For Ubuntu this would be done by issuing following command in a terminal: sudo apt install git<br> 
+NB. This guide assumes that the machine on which software is to be built is using a Linux operating system. Furthermore, git is used. If this is not installed on the machine this can be done using the package manager. For Ubuntu this would be done by issuing following command in a terminal: sudo apt install git<br> 
 
 1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library two things must be downloaded and built. Open a terminal and type these commands:<br>
     git clone https://github.com/zeromq/libzmq.git<br>
