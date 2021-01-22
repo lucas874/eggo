@@ -2,8 +2,8 @@
 
 Software Engineering Project for CE students fall 2020, Aarhus Universitet
 
-Eggo Enterprises
-
+![alt text](https://www.nicepng.com/png/full/422-4224687_eggo-thick-and-fluffy-waffles.png) <br>
+Eggo Enterprises<br> 
 How to build:
 
 1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library two things must be downloaded and built. Open a terminal and type these commands:<br>
