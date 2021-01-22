@@ -13,7 +13,7 @@ How to build:
     mkdir build<br>
     cd build<br>
     cmake ..<br>
-    sudo make -j4 install<br><br>
+    sudo make -j4 install<br>
     
     git clone https://github.com/zeromq/cppzmq.git<br>
     cd cppzmq<br>
@@ -22,7 +22,7 @@ How to build:
     cmake ..<br>
     sudo make -j4 install<br>
     
-2. If the installation of ZeroMQ was successfull we can proceed to build the email system. Type the following commands:
+2. If the installation of ZeroMQ was successfull we can proceed to build the email system. Type the following commands:<br>
     git clone https://github.com/lucas874/eggo.git --branch master<br>
     mkdir build<br>
     cd build<br>
