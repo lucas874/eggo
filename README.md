@@ -1,4 +1,4 @@
-Software Engineering Project for CE students fall 2020, Aarhus Universitet
+Software Engineering Project for CE students fall 2020, Aarhus Universitet<br>
 ![alt text](https://www.nicepng.com/png/full/422-4224687_eggo-thick-and-fluffy-waffles.png) <br>
 # Eggo Enterprises
 
