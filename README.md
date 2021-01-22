@@ -6,5 +6,7 @@ Eggo Enterprises
 
 How to build:
 
+1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library follow these steps:
+
 
 
