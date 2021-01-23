@@ -12,10 +12,14 @@ void POPauthorization::Action(POPsession* ps, POPevent* e) {
 			ps->Reply(USER_ERR);
 	}
 	else if(e->getEventNo() == 1) {
-		authorized = checkPass(ps, e->getData());
-		if(authorized)
-			ps->Reply(PASS_OK);
-		else
+		if(existingUser) {
+			authorized = checkPass(ps, e->getData());
+			if(authorized)
+				ps->Reply(PASS_OK);
+			else
+				ps->Reply(PASS_ERR);
+		}
+		else 
 			ps->Reply(PASS_ERR);
 	}
 	else if(e->getEventNo() == P_NOOP) 

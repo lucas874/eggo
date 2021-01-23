@@ -100,7 +100,7 @@
 #define POP_NOOP 6
 #define POP_RSET 7
 #define POP_QUIT 8
-
+#define POP_BADCMD 9
 
 /*
  * POP FSM states

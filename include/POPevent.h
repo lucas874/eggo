@@ -3,8 +3,8 @@
 #include "Globals.h"
 #include <iostream>
 
-//	         0       1       2       3       4       5       6       7       8
-enum POP_Events {P_USER, P_PASS, P_STAT, P_LIST, P_RETR, P_DELE, P_NOOP, P_RSET, P_QUIT};
+//	         0       1       2       3       4       5       6       7       8       9
+enum POP_Events {P_USER, P_PASS, P_STAT, P_LIST, P_RETR, P_DELE, P_NOOP, P_RSET, P_QUIT, P_BAD};
 
 class POPevent {
 	public:

@@ -21,7 +21,9 @@ void POPsession::Run() {
         	POPevent *e = ProcessRequest(request);
 
 		if(e->getEventNo() == POP_NOOP)
-		       Reply(REPLY_OK);
+			Reply(REPLY_OK);
+		else if(e->getEventNo() == POP_BADCMD)
+			Reply(BAD_CMD_SEQ);
 		else {	
 			currentevent = e;
 	    		ChangeState(e);
@@ -29,11 +31,12 @@ void POPsession::Run() {
 		}
 		
 	}
-	delete this;
+	Close();
 }
  
 void POPsession::Close() {
-	std::cout << "hej";
+	for(auto& i : states)
+	       delete i;
 }
 
 void POPsession::Reply(int replycode) {
@@ -130,7 +133,7 @@ POPevent* POPsession::ProcessRequest(std::string buffer) {
 	else if(CMD.compare("NOOP") == 0) 
 		e = P_NOOP;
 	else 
-		e = P_NOOP;
+		e = P_BAD;
 
 	if(currentState->getStateNo() == 0 && e == P_QUIT) {
 		Reply(QUIT_AUTH_OK);
