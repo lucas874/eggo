@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _GLOBALS_H_
+#define _GLOBALS_H_
+
 /*
  * Domain name
  */
@@ -8,8 +10,8 @@
 /*
  * Marks end of mail content transmission
  */
-#define END_DATA "\r\n.\r\n"
-//#define END_DATA "<CRLF>.<CRLF>"
+#define END_DATA "\r\n.\r\n"i
+
 /*
  * Reply codes as defined in RFC-821
  *
@@ -25,10 +27,10 @@
 #define FAIL_MAILBOX_UNAVAILABLE 450
 #define ERROR_IN_PROCESSING 451
 #define FAIL_INSUFFICIENT_STORAGE 452
-#define SYNTAX_ERROR_COMMAND_NOT_RECOGNIZED 500
+#define CMD_NOT_RECOGNIZED 500
 #define SYNTAX_ERROR_IN_ARGUMENTS 501
-#define COMMAND_NOT_IMPLEMENTED 502
-#define BAD_COMMAND_SEQUENCE 503
+#define CMD_NOT_IMPLEMENTED 502
+#define BAD_CMD_SEQUENCE 503
 #define PARAMETER_NOT_IMPLEMENTED 504
 #define MAILBOX_NOT_FOUND 550
 #define USER_NOT_LOCAL 551
@@ -49,18 +51,19 @@
 
 /*
  *
- * SMTP states
+ * SMTP states & commands
  *
  */
 
-#define STATE_INIT 0
-#define STATE_HELO 1
-#define STATE_MAIL 2
-#define STATE_RCPT 3
-#define STATE_DATA 4
-#define STATE_RSET 5
-#define STATE_QUIT 6
+#define SMTP_INIT 0
+#define SMTP_HELO 1
+#define SMTP_MAIL 2
+#define SMTP_RCPT 3
+#define SMTP_DATA 4
+#define SMTP_RSET 5
+#define SMTP_QUIT 6
 #define SMTP_NOOP 7
+#define SMTP_BAD_CMD 8
 
 
 
@@ -118,3 +121,4 @@
 #define EDIT_USER_REMU "REMU"
 #define EDIT_USER_QUIT "QUIT"
 
+#endif

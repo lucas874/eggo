@@ -20,25 +20,26 @@ int main()
     
     
     // Array containing commands sent to server
-    std::string arr[8];
+    std::string arr[10];
     arr[0] = ""; // Establish connection
     arr[1] = "Helo localhost"; // Helo
-    arr[2] = "mail Alice@localhost"; // Sender email
+    arr[2] = "mail ExampleUser@localhost"; // Sender email
     arr[3] = "rcpt Bob@localhost"; // Recipient
-    arr[4] = "data"; // Transmit content of mail
-    arr[5] = "Dear Bob,\n This is a piece of email"; // Content of mail
-    arr[6] = "\r\f.\r\f"; // End Data 
-    arr[7] = "quit"; // End session
+    arr[4] = "rcpt Alice@localhost";
+    arr[5] = "rcpt UserName@gmail.com"; // will not work
+    arr[6] = "data"; // Transmit content of mail
+    arr[7] = "Dear Bob & Alice,\n This is a piece of email"; // Content of mail
+    arr[8] = "\r\f.\r\f"; // End Data 
+    arr[9] = "quit"; // End session
     int i = 0;
     
     std::cout << "Starting SMTP session" << std::endl;
 
-    for (auto request_num = 0; request_num < 8; ++request_num) 
+    for (int i = 0; i < 10; i++) 
     {
         // send the request message
         std::cout << "Sending " << arr[i] << "..." << std::endl;
         socket.send(zmq::buffer(arr[i]), zmq::send_flags::none);
-	i++;
         
         // wait for reply from server
         zmq::message_t reply{};

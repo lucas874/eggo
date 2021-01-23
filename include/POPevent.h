@@ -1,6 +1,6 @@
 #ifndef _POPEVENT_H_
 #define _POPEVENT_H_
-#include "Globals.h"
+#include "globals.h"
 #include <iostream>
 
 //	         0       1       2       3       4       5       6       7       8       9

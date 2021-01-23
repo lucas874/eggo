@@ -1,8 +1,9 @@
 #ifndef _EDITUSERCOLLECTION_H_
 #define _EDITUSERCOLLECTION_H_
+
 #include "UserCollection.h"
 #include "connection.h"
-#include "Globals.h"
+#include "globals.h"
 #include <iostream>
 
 class EditUsers {

@@ -3,7 +3,7 @@
 
 #include "POPstate.h"
 #include "POPevent.h"
-#include "Globals.h"
+#include "globals.h"
 #include "UserCollection.h"
 #include "connection.h"
 #include <unistd.h>

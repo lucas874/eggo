@@ -42,13 +42,13 @@ void EditUsers::Reply(int replycode) {
 			buffer = "+OK\n";
 			break;
 		case -1:
-			buffer = "User doesn't exist\n";
+			buffer = "-ERR\n";
 			break;
 		case -2:
-			buffer = "Incorrect password, user not removed\n";
+			buffer = "-Incorrect password, user not removed\n";
 			break;
 		case -3:
-			buffer = "Request not understood\n";
+			buffer = "-Request not understood\n";
 	}
 	c->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 }

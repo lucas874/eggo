@@ -3,7 +3,8 @@
 #include <iostream>
 
 // Commands that SMTP receiver understands represented as enums
-enum SMTP_event_enum {INIT, HELO, MAIL, RCPT, DATA, RSET, QUIT, NOOP};
+//                    0	    1     2     3     4     5     6     7     8
+enum SMTP_event_enum {INIT, HELO, MAIL, RCPT, DATA, RSET, QUIT, NOOP, BAD_CMD};
 
 // Bytes received from socket parsed and converted to appropriate event
 class SMTPevent{

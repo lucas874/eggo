@@ -1,6 +1,9 @@
 #ifndef _POPSTATE_H_
 #define _POPSTATE_H_
+
 #include "POPevent.h"
+
+
 class POPsession;
 
 class POPstate {

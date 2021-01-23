@@ -2,8 +2,14 @@
 #include "SMTPsession.h"
 
 // Reply that service is ready
-void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {
-	sc->Reply(220);
+void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {	
+	if(e->getEventNo() == SMTP_HELO) // 1 corresponds to Helo	
+		sc->Reply(MAIL_ACTION_OK);
+	else if(e->getEventNo() == SMTP_QUIT) // Quit
+		sc->Reply(SERVICE_CLOSING);
+	else
+		sc->Reply(BAD_CMD_SEQUENCE); // Cannot do this in current state
+
 }
 
 void SMTPInit::ChangeState(SMTPsession* sc, int n) {
@@ -17,11 +23,26 @@ int SMTPInit::getStateNo() {
 
 void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {
 	
-	
-	std::string str = sc->getCurData().substr(5);
-  	sc->setSenderDomain(str);
-  
-  	sc->Reply(250);
+		
+	if(e->getData().size() == 0) {
+		sc->Reply(BAD_CMD_SEQUENCE);
+		return;
+	}
+	else 
+		sc->setSenderDomain(e->getData());	
+
+	/*
+	 * At this point the SMTP session has changed its state according to the
+	 * received command. It might seem redundant to check what command was received
+	 * again, but this is necessary because the transition could have been faulty/
+	 * not allowed. Necessary in this design at least...
+	 */
+	if(e->getEventNo() == SMTP_HELO) 
+		sc->Reply(MAIL_ACTION_OK); // Received helo ok
+	else if(e->getEventNo() == SMTP_QUIT)
+		sc->Reply(SERVICE_CLOSING);
+	else
+		sc->Reply(BAD_CMD_SEQUENCE);	
 }
 
 void SMTPHelo::ChangeState(SMTPsession* sc, int n) {
@@ -36,17 +57,17 @@ int SMTPHelo::getStateNo() {
 
 void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {	
 	std::string str = sc->getCurData();
-  int i = 0;
-  while(str[i] != '@')
-    i++;
+  	int i = 0;
+  	while(str[i] != '@')
+    		i++;
 
-  std::string name;
-  name = str.substr(0,i);
+  	std::string name;
+  	name = str.substr(0,i);
 
-  sc->setSenderUsername(name);
-  sc->curmail = new PieceOfMail();
-  sc->curmail->setsender(name);
-  sc->Reply(250);
+  	sc->setSenderUsername(name);
+  	sc->curmail = new PieceOfMail();
+  	sc->curmail->setsender(name);
+  	sc->Reply(MAIL_ACTION_OK);
 
 }
 
@@ -59,8 +80,7 @@ int SMTPMail::getStateNo() {
 	return stateNo;
 }
 
-void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
-  std::cout << "hello from Rcpt Action()" << std::endl;
+void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) { 
   std::string str = sc->getCurData();
   std::string domain;
   std::string name;
@@ -78,10 +98,15 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
     return;
   }
   else {
-    sc->rcpt.push_back(sc->_uc->LookUp(name));
+	  User* u = sc->_uc->LookUp(name);
+	  if (u != nullptr) {
+		  sc->rcpt.push_back(u);
+		  sc->curmail->setrcpt(name);
+		  sc->Reply(MAIL_ACTION_OK);
+	  }
+	  else 
+		  sc->Reply(USER_NOT_LOCAL);
   } 
-  sc->curmail->setrcpt(name);
-  sc->Reply(250);
 }
 
 void SMTPRcpt::ChangeState(SMTPsession* sc, int n) {
@@ -101,7 +126,7 @@ void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 	}
 	else {
 		sc->curmail->append(e->getData());
-		sc->Reply(250);
+		sc->Reply(MAIL_ACTION_OK);
 	}
 }
 
@@ -124,7 +149,7 @@ void SMTPRset::Action(SMTPsession* sc, SMTPevent* e) {
 	delete sc->curmail;
 	sc->currentState = sc->states[1];
 		
-	sc->Reply(250);
+	sc->Reply(MAIL_ACTION_OK);
 }
 
 void SMTPRset::ChangeState(SMTPsession* sc, int n) {

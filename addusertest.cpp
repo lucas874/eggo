@@ -12,7 +12,7 @@ int main() {
     	zmq::socket_t socket{context, zmq::socket_type::req};
     	socket.connect("tcp://localhost:50002");
 	
-	const std::string d("ADDU LarsPoulsen heste");
+	const std::string d("ADDU ExampleUser password");
     	const std::string D("QUIT");
 	const std::string streng("");
 

@@ -12,35 +12,27 @@ int main() {
     	zmq::socket_t socket{context, zmq::socket_type::req};
     	socket.connect("tcp://localhost:50001");
 	
-	const std::string d("USER Bob");
-	const std::string d1("PASS Kodeord");
-    	const std::string data{"STAT "};
-	const std::string data1{"LIST 5"};
-	const std::string data2{"RETR 0"};
-    	const std::string D("QUIT");
-	const std::string streng("");
+	std::string arr[8];
+	arr[0] = "";
+	arr[1] = "USER Alice";
+	arr[2] = "PASS 1234";
+	arr[3] = "STAT";
+	arr[4] = "RETR 0";
+	arr[5] = "DELE 0";
+	arr[6] = "RETR 0";
+	arr[7] = "QUIT";
 
-	std::string arr[7];
-	arr[0] = streng;
-	arr[1] = d;
-	arr[2] = d1;
-	arr[3] = data;
-	arr[4] = data1;
-	arr[5] = data2;
-	arr[6] = D;
-	int i = 0;
-	for (auto request_num = 0; request_num < 7; ++request_num) {
+
+	for (int i = 0; i < 8; i++) {
 		// send the request message
         	std::cout << "Sending " << arr[i] << "..." << std::endl;
         	socket.send(zmq::buffer(arr[i]), zmq::send_flags::none);
-		i++;
         
         	// wait for reply from server
         	zmq::message_t reply{};
         	socket.recv(reply, zmq::recv_flags::none);
 
-        	std::cout << "Received " << reply.to_string(); 
-        	std::cout << " (" << request_num << ")";
+        	std::cout << "Received " << reply.to_string(); 	
         	std::cout << std::endl;
 	}
 	return 0;

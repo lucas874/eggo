@@ -2,7 +2,7 @@
 #define SMTPCONNECTION_H_
 
 #include "SMTPstate.h"
-#include "Globals.h"
+#include "globals.h"
 #include "SMTPevent.h"
 #include "UserCollection.h"
 #include "PieceOfMail.h"

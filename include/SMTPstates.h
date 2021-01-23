@@ -2,7 +2,7 @@
 #define _SMTP_STATES_H_
 
 #include "SMTPstate.h"
-#include "Globals.h"
+#include "globals.h"
 #include <iostream>
 #include <vector>
 #include <string>

@@ -138,7 +138,7 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 				}
 				else {
 					buffer = std::to_string(tmp);
-					buffer += " octets.";
+					buffer += " octets.\n";
 					buffer += ps->getCurrentUser()->getMailContent(index);
 					buffer += "\n.\n";
 					replycode = REPLY_OK;

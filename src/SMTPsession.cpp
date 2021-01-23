@@ -29,6 +29,8 @@ void SMTPsession::Run() {
 	
 		if(ed->getEventNo() == SMTP_NOOP)
 			Reply(220);
+		if(ed->getEventNo() == SMTP_BAD_CMD)
+			Reply(CMD_NOT_RECOGNIZED);
 		else {
 			currentevent = ed;
 	    		ChangeState(ed);
@@ -60,57 +62,29 @@ void SMTPsession::Reply(int replycode) {
   	  case MAIL_ACTION_OK:
     		  buffer = "250 Requested mail action okay, completed";
     		  break;
-  	  case USER_NOT_LOCAL_FORWARDED:
-    		  buffer = "User not local; will not be forwarded";
+  	  case USER_NOT_LOCAL:
+    		  buffer = "551 User not local; will not be forwarded";
     		  break;
 	  case START_MAIL_INPUT:
 		  buffer = "354 Start mail input end with <CRLF>.<CRLF>";
     		  break;
 	  case SERVICE_NA_CLOSING:
-		  buffer = "localhost Service not available, closing transmission channel";
+		  buffer = "421 localhost Service not available, closing transmission channel";
 		  break;
 	  case FAIL_MAILBOX_UNAVAILABLE:
-		  buffer = "Mailbox unavailable";
+		  buffer = "552 Mailbox unavailable";
 		  break;
-	  case ERROR_IN_PROCESSING:
-    		  buffer = " ";
+	  case CMD_NOT_RECOGNIZED:
+		  buffer = "500 Command not recognized";
 		  break;
-	  case FAIL_INSUFFICIENT_STORAGE:
-		  buffer = " ";
-		  break;
-	  case SYNTAX_ERROR_COMMAND_NOT_RECOGNIZED:
-    		  buffer = " ";
-		  break;
-  	  case SYNTAX_ERROR_IN_ARGUMENTS:
-    		  buffer = " ";
-    		  break;
-  	  case COMMAND_NOT_IMPLEMENTED:
-    		  buffer = " ";
-    		  break;
-  	  case BAD_COMMAND_SEQUENCE:
-    		  buffer = " ";
-    		  break;
-	  case PARAMETER_NOT_IMPLEMENTED:
-    		  buffer = " ";
-    		  break;
-  	  case MAILBOX_NOT_FOUND:
-    		  buffer = " ";
-    		  break;
-  	  case USER_NOT_LOCAL:
-    		  buffer = " ";
-    		  break;
-  	  case MAIL_ACTION_ABORT_STORAGE:
-    		  buffer = " ";
-    		  break;
-	  case MAILBOX_SYNTAX_ERROR:
-    		  buffer = " ";
-    		  break;
-  	  case TRANSACTION_FAILED:
-    		  buffer = " ";
-    		  break;
-  	  default:
-    		  buffer = "Command not recognized";
+	  case BAD_CMD_SEQUENCE:
+		 buffer = "503 Bad sequence of commands";
+		 break; 
+	  default:
+    		  buffer = "Error. Command not recognized.";
   } 
+
+  buffer += "\n";
   
   // Send reply to client
   _connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
@@ -120,18 +94,17 @@ void SMTPsession::Reply(int replycode) {
 // Read string received from network and turn it into 
 // a type that the FSM understands
 SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
-	std::string CMD(4, ' ');
+	std::string CMD;
    
    	std::string data;
 
    	if(buffer.size() > 4)
-		data = buffer.substr(5);
+		data = buffer.substr(5, buffer.size()-4);
+	
 
-    
-   	for(int i = 0; i < 4; i++)
-		CMD[i] = buffer[i];
+	CMD = buffer.substr(0,4);
 
-   	transform(CMD.begin(), CMD.end(), CMD.begin(), ::tolower);
+	transform(CMD.begin(), CMD.end(), CMD.begin(), ::tolower);
 
    	enum SMTP_event_enum e;
 
@@ -165,7 +138,7 @@ SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
 		   e = HELO;
 	}
 	else
-		e = NOOP;
+		e = BAD_CMD;
 	
 	// SMTPevent with relevant enum and data 
 	SMTPevent *event = new SMTPevent(e, data);

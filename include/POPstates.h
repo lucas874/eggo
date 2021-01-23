@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "POPstate.h"
-#include "Globals.h"
+#include "globals.h"
 
 class POPauthorization : public POPstate {
 	public:
