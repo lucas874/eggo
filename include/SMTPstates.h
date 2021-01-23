@@ -7,11 +7,6 @@
 #include <vector>
 #include <string>
 
-/*             0     1     2     3     4     5     6     7		
- * enum Event {INIT, HELO, MAIL, RCPT, DATA, RSET, QUIT, NOOP};
- *
- */
-
 // Init state derived from the SMTPState interface
 class SMTPInit : public SMTPState {
 public:
@@ -24,7 +19,7 @@ public:
 	// Get index
 	int getStateNo() override; 
 private: 
-	// Vector to indicate allowed transitions. Indices corresponds to enum in Event.h
+	// Vector to indicate allowed transitions. Indices corresponds to enum in SMTPevent.h
 	std::vector<bool> allowedTransitions = 
 	{false, true, false, false, false, false, true, false};
 	// Notion of index

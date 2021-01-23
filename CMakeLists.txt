@@ -24,6 +24,9 @@ add_library(mailuserlib SHARED
 add_executable(SMTPclient SMTPclient.cpp)
 target_link_libraries(SMTPclient cppzmq)
 
+add_executable(SMTPclient1 SMTPclient1.cpp)
+target_link_libraries(SMTPclient1 cppzmq)
+
 add_executable(POPclient1 popclient1.cpp)
 target_link_libraries(POPclient1 cppzmq)
 
