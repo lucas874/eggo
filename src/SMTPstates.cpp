@@ -5,6 +5,10 @@
 void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {	
 	if(e->getEventNo() == SMTP_HELO) // 1 corresponds to Helo	
 		sc->Reply(MAIL_ACTION_OK);
+	else if(e->getEventNo() == SMTP_QUIT) {
+		sc->Reply(SERVICE_CLOSING);
+		ChangeState(sc, SMTP_QUIT);
+	}
 	else
 		sc->Reply(BAD_CMD_SEQUENCE); // Cannot do this in current state
 
@@ -23,22 +27,15 @@ int SMTPInit::getStateNo() {
 	return stateNo;
 }
 
-void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {
-	
-	if(e->getData().size() == 0) {
-		sc->Reply(BAD_CMD_SEQUENCE);
-		return;
+void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {	
+	if(e->getEventNo() == SMTP_QUIT) {
+		sc->Reply(SERVICE_CLOSING);
+		ChangeState(sc, SMTP_QUIT);
 	}
-	else 
-		sc->setSenderDomain(e->getData());	
-
-	/*
-	 * At this point the SMTP session has changed its state according to the
-	 * received command. It might seem redundant to check what command was received
-	 * again, but this is necessary because the transition could have been faulty/
-	 * not allowed. Necessary in this design at least...
-	 */
-	if(e->getEventNo() == SMTP_HELO) 
+	else if(e->getData().size() == 0) {
+		sc->Reply(BAD_CMD_SEQUENCE);
+	}
+	else if(e->getEventNo() == SMTP_HELO) 
 		sc->Reply(MAIL_ACTION_OK); // Received helo
 	else
 		sc->Reply(BAD_CMD_SEQUENCE); // Command can be issued in current state
@@ -58,13 +55,21 @@ void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
 	
 	if(e->getEventNo() == SMTP_MAIL) {	
 		std::string str = e->getData();
+
+		size_t pos = str.find("@");
+		if(pos == std::string::npos) {
+			sc->Reply(SYNTAX_ERROR);
+			return;
+		}
+		/*
   		int i = 0;
   		while(str[i] != '@')
     			i++;
-		
-		sc->setSenderUsername(str.substr(0,i));
+		*/
+		sc->setSenderUsername(str.substr(0,pos));
 		sc->curmail = new PieceOfMail();
-  		sc->curmail->setsender(sc->senderUsername);
+  		sc->curmail->setsender(str);
+		sc->setSenderDomain(str.substr(pos, str.size()-pos));
   		sc->Reply(MAIL_ACTION_OK);
 	}
 	else
@@ -98,14 +103,18 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
   		std::string domain;
   		std::string name;
 
-  		int i = 0;
-  		while(str[i] != '@') // Exctract username from email address 
-    		i++;
+  		int i;
+		for(i = 0; i < str.size(); i++) {
+			if(str[i] == '@')
+				break;
+		}
 
-  
+		if(i == str.size()) {
+			sc->Reply(SYNTAX_ERROR);
+			return;
+		}  
   		name = str.substr(0,i);
-  		domain = str.substr(i+1, str.size()-name.size());
- 
+  		domain = str.substr(i+1, str.size()-name.size());	
   		if(domain.compare(DOMAIN_NAME) != 0) {
 			sc->Reply(551); // We can only deliver mail to local users
 			return;

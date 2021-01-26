@@ -82,7 +82,10 @@ void SMTPsession::Reply(int replycode) {
 		 break;
 	  case END_OF_DATA:
 		 buffer = "355 Mail data transmission over";
-		 break; 
+		 break;
+	  case SYNTAX_ERROR:
+		 buffer = "501 syntax error";
+		 break;	 
 	  default:
     		  buffer = "Error. Command not recognized.";
   } 

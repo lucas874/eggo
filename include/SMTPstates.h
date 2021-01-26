@@ -23,7 +23,7 @@ private:
 	std::vector<bool> allowedTransitions = 
 	{false, true, false, false, false, false, true, false};
 	// Notion of index
-	int stateNo = INIT;
+	int stateNo = SMTP_INIT;
   
 };
 
@@ -44,7 +44,7 @@ private:
 	{false, false, true, false, false, false, true, false};
 	
 	// Index state
-	int stateNo = HELO;
+	int stateNo = SMTP_HELO;
 };
 
 // Mail state derived from SMTPState interface 
@@ -64,7 +64,7 @@ private:
 	{false, false, false, true, false, true, true, false};
 	
        	// Index state	
-	int stateNo = MAIL;
+	int stateNo = SMTP_MAIL;
 
 };
 
@@ -85,7 +85,7 @@ private:
 	{false, false, false, true, true, true, true, false};
   	
 	// Index state
-	int stateNo = RCPT;
+	int stateNo = SMTP_RCPT;
 };
 
 // Data state derived from SMTPState interface
@@ -105,7 +105,7 @@ private:
 	{false, true, true, false, true, true, true, false};
   	
 	// Index state
-	int stateNo = DATA;
+	int stateNo = SMTP_DATA;
   	
 };
 
@@ -125,7 +125,7 @@ private:
   	std::vector<bool> allowedTransitions = {false, true, true, false, false, true, true, false};
   	
 	// Notion of index
-	int stateNo = RSET; 
+	int stateNo = SMTP_RSET; 
 };
 
 // Quit state derived from SMTPState interface
@@ -145,7 +145,7 @@ private:
 	{false, false, false, false, false, false, false, false};
 	
 	// Notion of index
-	int stateNo = QUIT; 
+	int stateNo = SMTP_QUIT; 
 };
 
 #endif
