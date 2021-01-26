@@ -20,7 +20,7 @@ int main()
     
     
     // Array containing commands sent to server
-    std::string arr[10];
+    std::string arr[11];
     arr[0] = ""; // Establish connection
     arr[1] = "Helo localhost"; // Helo
     arr[2] = "mail ExampleUser@localhost"; // Sender email
@@ -29,13 +29,14 @@ int main()
     arr[5] = "rcpt UserName@gmail.com"; // will not work
     arr[6] = "data"; // Transmit content of mail
     arr[7] = "Dear Bob & Alice,\n This is a piece of email"; // Content of mail
-    arr[8] = "\\n.\\n"; // End Data 
-    arr[9] = "quit"; // End session
+    arr[8] = "secadasdsa";
+    arr[9] = "\\n.\\n"; // End Data 
+    arr[10] = "quit"; // End session
     int i = 0;
     
     std::cout << "Starting SMTP session" << std::endl;
 
-    for (int i = 0; i < 10; i++) 
+    for (int i = 0; i < 11; i++) 
     {
         // send the request message
         std::cout << "Sending " << arr[i] << "..." << std::endl;

@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/POPclient3.dir/popclient3.cpp.o  -o POPclient3  -Wl,-rpath,/usr/local/lib /usr/local/lib/libzmq.so.5.2.4 -lpthread /usr/lib/x86_64-linux-gnu/libsodium.so -lrt 

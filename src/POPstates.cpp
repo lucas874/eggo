@@ -5,33 +5,34 @@
  * Handle incoming commands when in the AUTHORIZATION state
  */
 void POPauthorization::Action(POPsession* ps, POPevent* e) {
-	// Handle USER command
-	if(e->getEventNo() == POP_USER) {
-		existingUser = checkUser(ps, e->getData()); // check if the user exists
-		if(existingUser) // if true, allow password input
-			ps->Reply(USER_OK);
-		else
-			ps->Reply(USER_ERR);
-	}
 
-	// Handle PASS command
-        else if(e->getEventNo() == POP_PASS) {
-		authorized = checkPass(ps, e->getData()); // check if password matches user
-		if(authorized) // if true, reply and set authorized to true
-			ps->Reply(PASS_OK);
-		else
-			ps->Reply(PASS_ERR);
+	switch(e->getEventNo()) {
+		case POP_USER:
+			existingUser = checkUser(ps, e->getData()); // check if the user exists
+			if(existingUser) // if true, allow password input
+				ps->Reply(USER_OK);
+			else
+				ps->Reply(USER_ERR);
+			break;
+		case POP_PASS:	
+			authorized = checkPass(ps, e->getData()); // check if password matches user
+			if(authorized) // if true, reply and set authorized to true
+				ps->Reply(PASS_OK);
+			else
+				ps->Reply(PASS_ERR);
+			break;
+		case POP_NOOP:
+			ps->Reply(REPLY_OK); // Handle NOOP command (reply +OK)
+			break;
+		case POP_QUIT:
+			ps->Reply(QUIT_AUTH_OK);
+			ps->run = false;
+			break;
+		default:
+			ps->Reply(BAD_CMD_SEQ); // Reply for any unavailable command in AUTH state
+			break;
 	}
 	
-	// Handle NOOP command (reply +OK)
-	else if(e->getEventNo() == POP_NOOP) 
-		ps->Reply(REPLY_OK);
-
-	// Reply for any unavailable command in AUTH state
-	else
-		ps->Reply(BAD_CMD_SEQ);
-
-
 	if(existingUser && authorized) // go to TRANSACTION state when authorized
 		ChangeState(ps, POP_STATE_TRAN);
 }

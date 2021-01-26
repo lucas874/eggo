@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/server.dir/main.cpp.o  -o server  -Wl,-rpath,/home/lucas/projekt/both_Top/build:/usr/local/lib libmaillib.so libmailuserlib.so /usr/local/lib/libzmq.so.5.2.4 -lpthread /usr/lib/x86_64-linux-gnu/libsodium.so -lrt 

@@ -147,7 +147,7 @@ POPevent* POPsession::ProcessRequest(std::string buffer) {
 		e = POP_BAD;
 
 	if(currentState->getStateNo() == 0 && e == POP_QUIT) {
-		Reply(QUIT_AUTH_OK);
+		//Reply(QUIT_AUTH_OK);
 	       	// Handle this. Close properly, destroy current POPsession object.	
 	}
 	
