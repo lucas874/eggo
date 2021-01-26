@@ -64,7 +64,7 @@
 #define SMTP_QUIT 6
 #define SMTP_NOOP 7
 #define SMTP_BAD_CMD 8
-
+#define SMTP_SUBJ 9
 
 
 /*

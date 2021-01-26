@@ -86,11 +86,13 @@ int SMTPMail::getStateNo() {
  * If design was better, we could do without some of the if statements.
  */
 void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {	
-	if(e->getEventNo() != SMTP_RCPT) {  // If we tried to change state, but it wasn't allowed
-		sc->Reply(BAD_CMD_SEQUENCE); // control goes here. This is how we process the
-		return;                     // command in such a case. 
-	}
-	else {
+	
+	if(e->getEventNo() == SMTP_SUBJ) {
+		sc->curmail->setSubject(e->getData());
+ 		sc->Reply(MAIL_ACTION_OK);
+		return;
+	}		
+	else if(e->getEventNo() == SMTP_RCPT) {
 		// Throws error if not formatted correcly fix....
 		std::string str = e->getData();	
   		std::string domain;
@@ -118,6 +120,10 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
 			else 
 				sc->Reply(USER_NOT_LOCAL); // If user doesn't exist
 		}	
+	}
+	else  {  // If we tried to change state, but it wasn't allowed
+		sc->Reply(BAD_CMD_SEQUENCE); // control goes here. This is how we process the
+		return;                     // command in such a case. 
 	}
 }
 

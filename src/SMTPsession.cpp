@@ -134,6 +134,8 @@ SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
      		e = NOOP;
 	else if(CMD.compare("quit") == 0)
 	       e = QUIT;
+	else if(CMD.compare("subj") == 0)
+		e = SUBJ;
    	else if(currentState->getStateNo() == 4) {
 		e = DATA;
 	   	data = buffer;
