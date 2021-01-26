@@ -3,6 +3,12 @@
 
 #include <string> 
 #include "PieceOfMail.h"
+
+
+/*
+ * Interface for the User class
+ */
+
 class User {
 	public:
 		User(std::string _name, std::string _pass)
@@ -25,7 +31,8 @@ class User {
 		
 		int getInboxSizeOctets();
 		int getMailSize(int);
-		std::string getMailContent(int);
+		int getMailLines(int);
+		std::vector<std::string> getMailContent(int);
 		void deleteMail(int);
 	private:
 		std::string name;

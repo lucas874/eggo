@@ -25,7 +25,7 @@ void SMTPsession::Run() {
     		std::string request = rawrequest.to_string();
     		std::cout << "Received " << request << std::endl;
 	
-		SMTPevent *ed = ProcessRequest(request);
+		SMTPevent *ed = ProcessRequest(request);	
 	
 		if(ed->getEventNo() == SMTP_NOOP)
 			Reply(220);
@@ -79,6 +79,9 @@ void SMTPsession::Reply(int replycode) {
 		  break;
 	  case BAD_CMD_SEQUENCE:
 		 buffer = "503 Bad sequence of commands";
+		 break;
+	  case END_OF_DATA:
+		 buffer = "355 Mail data transmission over";
 		 break; 
 	  default:
     		  buffer = "Error. Command not recognized.";
@@ -134,8 +137,6 @@ SMTPevent* SMTPsession::ProcessRequest(std::string buffer) {
    	else if(currentState->getStateNo() == 4) {
 		e = DATA;
 	   	data = buffer;
-		if(buffer.substr(0,5).compare("\r\f.\r\f") == 0)
-		   e = HELO;
 	}
 	else
 		e = BAD_CMD;

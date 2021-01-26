@@ -16,8 +16,11 @@ class PieceOfMail {
 	 // Sender of email
 	 std::string sender;
 
+	 // Subject of email
+	 std::string subject;
+
 	 // Content of piece of mail is stored here
-	 std::string content;
+	 std::vector<std::string> content;
  public:
 	 PieceOfMail(){};
 
@@ -28,13 +31,18 @@ class PieceOfMail {
 	 void append(std::string);
 
 	 // Access email content
-	 std::string getContent();
+	 std::vector<std::string> getContent();
 
 	 // Set recepient of email
 	 void setrcpt(std::string);
 
 	 // Set sender of email
 	 void setsender(std::string);
+
+	 // Set subject
+	 void setSubject(std::string);
+
+	 int getLineNo();
   
 };
 

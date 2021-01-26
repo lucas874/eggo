@@ -45,13 +45,13 @@ User* UserCollection::LookUp(std::string username) {
 void UserCollection::addMailToInbox(User* u, PieceOfMail* p) {
 	
 	u->addMail(p);
-	std::string filename = u->getInboxPath();
-	filename += std::to_string(u->getInboxSize()); 
-	filename += ".txt";	
-	std::ofstream letter;
-	letter.open(filename);
+	//std::string filename = u->getInboxPath();
+	//filename += std::to_string(u->getInboxSize()); 
+	//filename += ".txt";	
+	//std::ofstream letter;
+	//letter.open(filename);
 
-	letter << p->getContent();
+	//letter << p->getContent();
 
 	
 } 

@@ -44,10 +44,16 @@ int User::getMailSize(int index) {
 	return sizeof(inbox[index]->getContent());
 }
 
-std::string User::getMailContent(int index) {
+std::vector<std::string> User::getMailContent(int index) {
 	return inbox[index]->getContent();
 }
 
 void User::deleteMail(int index) {
 	inbox.erase(inbox.begin()+index);
+}
+
+int User::getMailLines(int index) {
+	if(inbox.empty())
+		return -1;
+	return inbox[index]->getLineNo();
 }

@@ -34,6 +34,22 @@ int main() {
 
         	std::cout << "Received " << reply.to_string(); 	
         	std::cout << std::endl;
+
+		if(i == 4) {
+			std::string str = reply.to_string();
+
+			int lines = stoi(str.substr(4, str.size()-5));
+
+        		std::cout << "Received " << reply.to_string(); 	
+        		std::cout << std::endl;
+
+			for(int j = 0; j < lines; j++) {
+				socket.send(zmq::buffer(arr[i]), zmq::send_flags::none);
+				zmq::message_t reply{};
+        			socket.recv(reply, zmq::recv_flags::none);
+				std::cout << reply.to_string() << std::endl;
+			}
+		}
 	}
 	return 0;
 

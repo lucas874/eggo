@@ -29,7 +29,7 @@ int main()
     arr[5] = "rcpt UserName@gmail.com"; // will not work
     arr[6] = "data"; // Transmit content of mail
     arr[7] = "Dear Bob & Alice,\n This is a piece of email"; // Content of mail
-    arr[8] = "\r\f.\r\f"; // End Data 
+    arr[8] = "\\n.\\n"; // End Data 
     arr[9] = "quit"; // End session
     int i = 0;
     

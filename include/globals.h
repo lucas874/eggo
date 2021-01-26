@@ -10,7 +10,7 @@
 /*
  * Marks end of mail content transmission
  */
-#define END_DATA "\r\n.\r\n"i
+#define END_DATA "\r\n.\r\n"
 
 /*
  * Reply codes as defined in RFC-821
@@ -37,7 +37,7 @@
 #define MAIL_ACTION_ABORT_STORAGE 552
 #define MAILBOX_SYNTAX_ERROR 553
 #define TRANSACTION_FAILED 554
-
+#define END_OF_DATA 355
 
 /*
  * Maximum lengths
@@ -90,6 +90,8 @@
 #define GREETING 16
 #define REPLY_OK 17
 #define REPLY_ERR 18
+#define CONTENT_TRANSMIT 19
+
 /*
  * Pop Commands
  */
@@ -103,7 +105,7 @@
 #define POP_NOOP 6
 #define POP_RSET 7
 #define POP_QUIT 8
-#define POP_BADCMD 9
+#define POP_BAD 9
 
 /*
  * POP FSM states

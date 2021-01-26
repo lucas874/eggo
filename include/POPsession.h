@@ -9,6 +9,11 @@
 #include <unistd.h>
 #include <set>
 
+
+/*
+ * Interface for the POPsession class
+ */
+
 class POPsession {
 	public:
 		POPsession(std::vector<POPstate*>, UserCollection*, struct connection*);

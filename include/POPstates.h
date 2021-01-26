@@ -6,6 +6,11 @@
 #include "POPstate.h"
 #include "globals.h"
 
+/*
+ * Interface for the states of the POP3 server
+ */
+
+// AUTHORIZATION state class
 class POPauthorization : public POPstate {
 	public:
 		void Action(POPsession* ps, POPevent* e) override;
@@ -25,12 +30,14 @@ class POPauthorization : public POPstate {
 		
 };
 
+// TRANSITION state class
 class POPtransaction : public POPstate {
 	public:
 		void Action(POPsession* ps, POPevent* e) override;
   		void ChangeState(POPsession* ps, int n) override;
   		int getStateNo() override; 
 		int getDeletedSizeOctets(POPsession* ps);
+		void transmitContent(POPsession*, int);
 
 
 	private:
@@ -40,7 +47,7 @@ class POPtransaction : public POPstate {
 		int stateNo = 1;
 };
 
-
+// UPDATE state class
 class POPupdate : public POPstate {
 	public:
 		void Action(POPsession* ps, POPevent* e) override;

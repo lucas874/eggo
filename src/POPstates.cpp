@@ -1,46 +1,54 @@
 #include "POPstates.h"
 #include "POPsession.h"
 
+/*
+ * Handle incoming commands when in the AUTHORIZATION state
+ */
 void POPauthorization::Action(POPsession* ps, POPevent* e) {
-	
-
-	if(e->getEventNo() == 0) {
-		existingUser = checkUser(ps, e->getData());
-		if(existingUser)
+	// Handle USER command
+	if(e->getEventNo() == POP_USER) {
+		existingUser = checkUser(ps, e->getData()); // check if the user exists
+		if(existingUser) // if true, allow password input
 			ps->Reply(USER_OK);
 		else
 			ps->Reply(USER_ERR);
 	}
-	else if(e->getEventNo() == 1) {
-		if(existingUser) {
-			authorized = checkPass(ps, e->getData());
-			if(authorized)
-				ps->Reply(PASS_OK);
-			else
-				ps->Reply(PASS_ERR);
-		}
-		else 
+
+	// Handle PASS command
+        else if(e->getEventNo() == POP_PASS) {
+		authorized = checkPass(ps, e->getData()); // check if password matches user
+		if(authorized) // if true, reply and set authorized to true
+			ps->Reply(PASS_OK);
+		else
 			ps->Reply(PASS_ERR);
 	}
-	else if(e->getEventNo() == P_NOOP) 
+	
+	// Handle NOOP command (reply +OK)
+	else if(e->getEventNo() == POP_NOOP) 
 		ps->Reply(REPLY_OK);
+
+	// Reply for any unavailable command in AUTH state
 	else
 		ps->Reply(BAD_CMD_SEQ);
 
 
-	if(existingUser && authorized)
-		ps->currentState = ps->states[1];
+	if(existingUser && authorized) // go to TRANSACTION state when authorized
+		ChangeState(ps, POP_STATE_TRAN);
 }
 
+
+// Public method for changing state
 void POPauthorization::ChangeState(POPsession* ps, int n) {
 	if(allowedTransitions[n])
 		ps->currentState = ps->states[n];
 }
 
+// Public method for getting the integer representing the current state
 int POPauthorization::getStateNo() {
 	return stateNo;
 }
 
+// Public method for checking if the user is one that exists
 bool POPauthorization::checkUser(POPsession* ps, std::string name) {
 	User* tmp = ps->uc->LookUp(name);
 	if(tmp != nullptr) {		
@@ -50,6 +58,7 @@ bool POPauthorization::checkUser(POPsession* ps, std::string name) {
 	return false;
 }
 
+// Public method for authorizing the current user
 bool POPauthorization::checkPass(POPsession* ps, std::string pass) {	
 	if(pass.compare(ps->getCurrentUser()->getPass()) == 0)
 		return true;
@@ -57,6 +66,7 @@ bool POPauthorization::checkPass(POPsession* ps, std::string pass) {
 		return false;
 }
 
+// Private method for getting the cumulative size of deleted mails in current session
 int POPtransaction::getDeletedSizeOctets(POPsession* ps) {
 	int sz = 0;
 	for(auto &itr : ps->markedAsDeleted) {
@@ -64,16 +74,26 @@ int POPtransaction::getDeletedSizeOctets(POPsession* ps) {
 	}	
 	return sz;
 }
-//	       0     1     2     3     4     5     6     7     8
-//enum POPevents {USER, PASS, STAT, LIST, RETR, DELE, NOOP, RSET, QUIT};
 
+
+void POPtransaction::transmitContent(POPsession *ps, int index) {
+	std::vector<std::string> content;
+	content = ps->getCurrentUser()->getMailContent(index);
+	for(auto &i : content) {
+		zmq::message_t rawrequest;
+    		ps->_connection->socket.recv(rawrequest, zmq::recv_flags::none);
+    		ps->Reply(CONTENT_TRANSMIT, i);
+	}
+}
+
+/*
+ * Handle incoming commands when in the TRANSACTION state
+ *
+ * See https://tools.ietf.org/pdf/rfc1939.pdf for functionality
+ */
 void POPtransaction::Action(POPsession* ps, POPevent* e) {
 	std::string buffer;
 	int replycode;
-
-	/*
-	 * Handles different commands
-	 */
 
 	switch(e->getEventNo()) {
 
@@ -96,7 +116,7 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 					
 				}
 				else {
-					buffer = index;
+					buffer = std::to_string(index);
 					buffer += " ";
 					buffer += std::to_string(tmp);
 					replycode = REPLY_OK;
@@ -108,15 +128,18 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 					buffer = "Inbox empty";
 				}
 				else {
-					for(int i = 0; sz + ps->markedAsDeleted.size(); ++i) {
+					for(int i = 0; i < sz + ps->markedAsDeleted.size(); ++i) {
 						if(ps->markedAsDeleted.find(i) == ps->markedAsDeleted.end()) {
 							buffer += std::to_string(i);
 							buffer += " ";
 							buffer += std::to_string(ps->getCurrentUser()->getMailSize(i));
-							buffer += "\n";
+							if(i == sz + ps->markedAsDeleted.size() - 1)
+							{} else
+								buffer += "\n";
 						}
 
-					}	
+					}
+					
 				}
 				replycode = REPLY_OK;
 			}
@@ -130,7 +153,7 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 			}
 			else {
 				int index = std::stoi(e->getData());
-				int tmp = ps->getCurrentUser()->getMailSize(index);
+				int tmp = ps->getCurrentUser()->getMailLines(index);
 				if(tmp == -1 || ps->markedAsDeleted.find(index) != ps->markedAsDeleted.end()) {
 					buffer = "No such mail exists.";
 					replycode = REPLY_ERR;
@@ -138,10 +161,10 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 				}
 				else {
 					buffer = std::to_string(tmp);
-					buffer += " octets.\n";
-					buffer += ps->getCurrentUser()->getMailContent(index);
-					buffer += "\n.\n";
-					replycode = REPLY_OK;
+					//buffer += " lines.";
+					ps->Reply(REPLY_OK, buffer);
+					transmitContent(ps, index);
+					return;
 				}
 			}
 			break;
@@ -195,17 +218,20 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 	ps->Reply(replycode, buffer);
 }
 
-
-
+// Public method for changing state
 void POPtransaction::ChangeState(POPsession* ps, int n) {
 	if(allowedTransitions[n])
 		ps->currentState = ps->states[n];
 }
 
+// Public method for getting the integer representing the current state
 int POPtransaction::getStateNo() {
 	return stateNo;
 }
 
+/*
+ * Update the state of the users inbox with the UPDATE state
+ */
 void POPupdate::Action(POPsession* ps, POPevent* ) {
 	for(auto &i : ps->markedAsDeleted) 
 		ps->currentUser->deleteMail(i);
@@ -219,17 +245,21 @@ void POPupdate::Action(POPsession* ps, POPevent* ) {
 		buffer += " message(s) left)\n";
 	}
 	else {
-		buffer = "POP3 server signing off (maildrop empty)\n";
+		buffer = "POP3 server signing off (maildrop empty)";
 	}
 	ps->run = false;
 	ps->Reply(REPLY_OK, buffer);
+
+	// implement REPLY_ERR reply if not properly deleted (?)
 }
 
+// Public method for changing state
 void POPupdate::ChangeState(POPsession* ps, int n) {
 	if(allowedTransitions[n])
 		ps->currentState = ps->states[n];
 }
 
+// Public method for getting the integer representing the current state
 int POPupdate::getStateNo() {
 	return stateNo;
 }

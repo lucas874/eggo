@@ -91,7 +91,8 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
 		return;                     // command in such a case. 
 	}
 	else {
-		std::string str = e->getData();
+		// Throws error if not formatted correcly fix....
+		std::string str = e->getData();	
   		std::string domain;
   		std::string name;
 
@@ -140,8 +141,15 @@ void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 			sc->Reply(354);
 		}
 		else {
-			sc->curmail->append(e->getData()); // Append if piece of mail is not empty
-			sc->Reply(MAIL_ACTION_OK);
+			if(e->getData().compare("\\n.\\n") == 0) {
+				sc->curmail->append(e->getData());
+				sc->Reply(END_OF_DATA);
+				ChangeState(sc, 1);
+			}
+			else {
+				sc->curmail->append(e->getData()); // Append if piece of mail is not empty
+				sc->Reply(MAIL_ACTION_OK);
+			}
 		}
 	}
 }

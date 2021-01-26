@@ -1,6 +1,6 @@
 #include "POPsession.h"
 
-
+// POPsession constructor with vector of states, collection of users and connection
 POPsession::POPsession(std::vector<POPstate*> v, UserCollection* u, struct connection* c)
 	: states(v)
 	, currentState(v[0])
@@ -11,6 +11,7 @@ POPsession::POPsession(std::vector<POPstate*> v, UserCollection* u, struct conne
 		//socket.bind("tcp://*:50001");
 	}
 
+// Run method that loops, receives commands on its socket and performs the correct actions
 void POPsession::Run() {
 	while(run) {
 		zmq::message_t rawrequest;
@@ -22,7 +23,7 @@ void POPsession::Run() {
 
 		if(e->getEventNo() == POP_NOOP)
 			Reply(REPLY_OK);
-		else if(e->getEventNo() == POP_BADCMD)
+		else if(e->getEventNo() == POP_BAD)
 			Reply(BAD_CMD_SEQ);
 		else {	
 			currentevent = e;
@@ -33,12 +34,14 @@ void POPsession::Run() {
 	}
 	Close();
 }
- 
+
+// Delete states 
 void POPsession::Close() {
 	for(auto& i : states)
 	       delete i;
 }
 
+// Reply method only with reply code as parameter
 void POPsession::Reply(int replycode) {
 	std::string buffer;
 	switch(replycode) {
@@ -82,10 +85,12 @@ void POPsession::Reply(int replycode) {
 			break;
 	}	
 
-  	buffer += "\n"; 
-  	_connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
+  	buffer += "\n";
+	// send reply message
+	_connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 }
 
+// Reply method with both reply code and a string as parameters
 void POPsession::Reply(int replycode, std::string reply) {
 	std::string buffer;
 
@@ -93,68 +98,77 @@ void POPsession::Reply(int replycode, std::string reply) {
 		case REPLY_OK:
 			buffer = "+OK ";
 			buffer += reply;
+			buffer += "\n";
 			break;	
 		case REPLY_ERR:
 			buffer = "-ERR ";
 			buffer += reply;
+			buffer += "\n";
+			break;
+		case CONTENT_TRANSMIT:
+			buffer = reply;
 			break;
 	}
-	buffer += "\n";
+		
+	// send reply message
 	_connection->socket.send(zmq::buffer(buffer), zmq::send_flags::none);
 
 }
 
+// Process the strings of incoming commands to decide event type
 POPevent* POPsession::ProcessRequest(std::string buffer) {
 
-	enum POP_Events e;
+	int e;
 
 	std::string CMD = buffer.substr(0, 4);
 	
 	std::string data;
 	if(buffer.size() > 4)
-		data = buffer.substr(5);
-	
+		data = buffer.substr(5); // assign the argument after the command to a string	
 	if(CMD.compare("USER") == 0)
-		e = P_USER;
+		e = POP_USER;
 	else if(CMD.compare("PASS") == 0)
-		e = P_PASS;
+		e = POP_PASS;
 	else if(CMD.compare("STAT") == 0)
-		e = P_STAT;
+		e = POP_STAT;
 	else if(CMD.compare("LIST") == 0)
-		e = P_LIST;
+		e = POP_LIST;
 	else if(CMD.compare("RETR") == 0)
-		e = P_RETR;
+		e = POP_RETR;
 	else if(CMD.compare("DELE") == 0)
-		e = P_DELE;
+		e = POP_DELE;
 	else if(CMD.compare("RSET") == 0)
-		e = P_RSET;
+		e = POP_RSET;
 	else if(CMD.compare("QUIT") == 0)
-		e = P_QUIT;
+		e = POP_QUIT;
 	else if(CMD.compare("NOOP") == 0) 
-		e = P_NOOP;
+		e = POP_NOOP;
 	else 
-		e = P_BAD;
+		e = POP_BAD;
 
-	if(currentState->getStateNo() == 0 && e == P_QUIT) {
+	if(currentState->getStateNo() == 0 && e == POP_QUIT) {
 		Reply(QUIT_AUTH_OK);
 	       	// Handle this. Close properly, destroy current POPsession object.	
 	}
-
+	
+	// create the POPevent with the specified event and data, return it
 	POPevent* event = new POPevent(e, data);
 	return event;	
 }
 
+// Method for changing state
 void POPsession::ChangeState(POPevent* e)  {
        currentState->ChangeState(this, e->getStateNo());
 }
 
+// Method for setting the currently logged in user
 void POPsession::setCurrentUser(User* user) {
 	currentUser = user;
 }
 
+// Method for returning the currently logged in user
 User* POPsession::getCurrentUser() {
 	return currentUser;
 }
-
 
 
