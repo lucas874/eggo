@@ -43,3 +43,15 @@ void PieceOfMail::setHeader() {
 int PieceOfMail::getLineNo() {
 	return content.size();
 }
+
+void PieceOfMail::markAsRead() {
+	read = true;
+}
+
+void PieceOfMail::markAsUnread() {
+	read = false;
+}
+
+bool PieceOfMail::getReadStatus() {
+	return read;
+}

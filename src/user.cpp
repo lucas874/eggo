@@ -57,3 +57,15 @@ int User::getMailLines(int index) {
 		return -1;
 	return inbox[index]->getLineNo();
 }
+
+bool User::getReadStatus(int index) {
+        return inbox[index]->getReadStatus();
+}
+
+void User::markAsRead(int index) {
+	inbox[index]->markAsRead();
+}
+
+void User::markAsUnread(int index) {
+	inbox[index]->markAsUnread();
+}

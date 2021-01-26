@@ -21,6 +21,9 @@ class PieceOfMail {
 
 	 // Content of piece of mail is stored here
 	 std::vector<std::string> content;
+
+	 // Read/unread boolean
+	 bool read = false;
  public:
 	 PieceOfMail(){};
 
@@ -42,8 +45,14 @@ class PieceOfMail {
 	 // Set subject
 	 void setSubject(std::string);
 
+	 // Get amount of lines of email
 	 int getLineNo();
-  
+
+	 // Change read status of email
+	 void markAsRead();
+	 void markAsUnread();
+
+         bool getReadStatus();
 };
 
 

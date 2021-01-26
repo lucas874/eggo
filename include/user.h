@@ -34,6 +34,9 @@ class User {
 		int getMailLines(int);
 		std::vector<std::string> getMailContent(int);
 		void deleteMail(int);
+	        void markAsRead(int);
+	        void markAsUnread(int);
+	        bool getReadStatus(int);
 	private:
 		std::string name;
 		std::string password;
