@@ -3,7 +3,11 @@ Software Engineering Project for CE students fall 2020, Aarhus Universitet<br>
 # Eggo Enterprises
 
 How to build:<br>
+<<<<<<< HEAD
 NB. This guide assumes that the machine on which software is to be built is using a Linux operating system. To build the system the machine will need a C++ compiler, cmake, libtool and git. If you are unsure whether these things are installed, they can be installed using a package manager. f you are using Ubuntu this can be done by issuing the command: sudo apt-get install build-essential libtool cmake<br> 
+=======
+NB. This guide assumes that the machine on which software is to be built is using a Linux operating system. To build the system the machine will need a C++ compiler, cmake, libtool and git. If you are unsure whether this is installed, you can download these using a package mangager. If you are using Ubuntu this can be done by issuing the command: sudo apt-get install build-essential libtool cmake<br> 
+>>>>>>> c1111d30d827801c61bd7e4162565e086fb849b5
 
 1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library two things must be downloaded and built. Open a terminal and type these commands:<br>
     git clone https://github.com/zeromq/libzmq.git<br>
@@ -25,7 +29,7 @@ NB. This guide assumes that the machine on which software is to be built is usin
     
     cd ~<br>
 
-2. If the installation of ZeroMQ was successfull we can proceed to build the email system. Type the following commands:<br>
+2. If the installation of ZeroMQ was successful we can proceed to build the email system. Type the following commands:<br>
     git clone https://github.com/lucas874/eggo.git --branch master<br>
     cd eggo<br>
     mkdir build<br>
