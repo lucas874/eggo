@@ -32,7 +32,7 @@ void SMTPsession::Run() {
 		if(ed->getEventNo() == SMTP_BAD_CMD)
 			Reply(CMD_NOT_RECOGNIZED);
 		else {
-			currentevent = ed;
+			//currentevent = ed;
 	    		ChangeState(ed);
 	    		currentState->Action(this, ed);
 		}
@@ -173,7 +173,7 @@ void SMTPsession::setRcptUsername(std::string s) {
   rcptUsername.push_back(s);
 }
 
-std::string SMTPsession::getCurData() {
+/*std::string SMTPsession::getCurData() {
   return currentevent->getData();
-}
+}*/
 

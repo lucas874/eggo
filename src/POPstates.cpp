@@ -1,6 +1,7 @@
 #include "POPstates.h"
 #include "POPsession.h"
 
+
 /*
  * Handle incoming commands when in the AUTHORIZATION state
  */
@@ -14,17 +15,21 @@ void POPauthorization::Action(POPsession* ps, POPevent* e) {
 			else
 				ps->Reply(USER_ERR);
 			break;
-		case POP_PASS:	
-			authorized = checkPass(ps, e->getData()); // check if password matches user
-			if(authorized) // if true, reply and set authorized to true
-				ps->Reply(PASS_OK);
+		case POP_PASS:
+			if(ps->getCurrentUser()) {
+				 authorized = checkPass(ps, e->getData()); // check if password matches user
+				 if(authorized) // if true, reply and set authorized to true
+					 ps->Reply(PASS_OK);
+				 else
+					 ps->Reply(PASS_ERR);
+			}
 			else
-				ps->Reply(PASS_ERR);
+				ps->Reply(BAD_CMD_SEQ);
 			break;
 		case POP_NOOP:
 			ps->Reply(REPLY_OK); // Handle NOOP command (reply +OK)
 			break;
-		case POP_QUIT:
+	        case POP_QUIT:
 			ps->Reply(QUIT_AUTH_OK);
 			ps->run = false;
 			break;
@@ -32,11 +37,10 @@ void POPauthorization::Action(POPsession* ps, POPevent* e) {
 			ps->Reply(BAD_CMD_SEQ); // Reply for any unavailable command in AUTH state
 			break;
 	}
-	
+
 	if(existingUser && authorized) // go to TRANSACTION state when authorized
 		ChangeState(ps, POP_STATE_TRAN);
 }
-
 
 // Public method for changing state
 void POPauthorization::ChangeState(POPsession* ps, int n) {
@@ -267,7 +271,7 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 			break;
 
 		// Handle QUIT command
-	        case POP_QUIT:
+	        /*case POP_QUIT:
 			ChangeState(ps, POP_STATE_UPDATE);
 			
 			int size = ps->currentUser->getInboxSize();
@@ -280,7 +284,7 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 				buffer = "POP3 server signing off (maildrop empty)";
 			}
 			replycode = REPLY_OK;
-		        break;	  
+		        break;*/	  
 	}
 	
 	ps->Reply(replycode, buffer);
@@ -303,8 +307,9 @@ int POPtransaction::getStateNo() {
  * Update the state of the users inbox with the UPDATE state
  */
 void POPupdate::Action(POPsession* ps, POPevent* ) {
-	for(auto &i : ps->markedAsDeleted) 
-		ps->currentUser->deleteMail(i);
+	for (auto i = ps->markedAsDeleted.rbegin(); i != ps->markedAsDeleted.rend(); ++i) {
+		ps->currentUser->deleteMail(*i);
+	}
 	
 	std::string buffer;
 	int size = ps->currentUser->getInboxSize();

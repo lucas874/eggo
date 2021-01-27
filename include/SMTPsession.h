@@ -88,9 +88,6 @@ class SMTPsession {
 		// Array of states
   		std::vector<SMTPState*> states;
 
-		// Current event
-  		SMTPevent* currentevent;
-
 		// Sender domain of current session	
   		std::string senderDomain;
 

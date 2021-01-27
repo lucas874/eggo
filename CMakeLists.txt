@@ -21,6 +21,9 @@ add_library(mailuserlib SHARED
   src/editUserCollection.cpp
   )
 
+add_executable(unitTests unitTests.cpp)
+target_link_libraries(unitTests cppzmq)
+
 add_executable(SMTPclient SMTPclient.cpp)
 target_link_libraries(SMTPclient cppzmq)
 

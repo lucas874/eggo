@@ -65,12 +65,6 @@ void POPsession::Reply(int replycode) {
 			buffer += std::to_string(currentUser->getInboxSize());
 			buffer += " messages left)";
 			break;
-		case STAT_OK:
-			buffer = "+OK ";
-			buffer += std::to_string(currentUser->getInboxSize());
-			buffer += " ";
-			buffer += std::to_string(currentUser->getInboxSizeOctets());
-			break;
 		case BAD_CMD_SEQ:
 			buffer = "-ERR bad sequence of commands, try another";
 			break;
