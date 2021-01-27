@@ -25,7 +25,7 @@ NB. This guide assumes that the machine on which software is to be built is usin
     
     cd ~<br>
 
-2. If the installation of ZeroMQ was successfull we can proceed to build the email system. Type the following commands:<br>
+2. If the installation of ZeroMQ was successful we can proceed to build the email system. Type the following commands:<br>
     git clone https://github.com/lucas874/eggo.git --branch master<br>
     cd eggo<br>
     mkdir build<br>
