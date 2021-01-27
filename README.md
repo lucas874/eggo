@@ -49,8 +49,7 @@ once the project has been made then write
 A login window should pop up in the top left corner of your screen to login then you will 
 first have to register a user. Registering a user is fairly simple first you have to click on the 
 register button and afterwards then the register window should pop-up do as the placeholdertext 
-tells you and click register. Now you should have a user good to go. you can now write your newly 
-created username and password in the loginwindow and login to your mailbox.
+tells you and click register. When you register and log in do not put a @ and a domain name, just a desired user name. Now you should have a user good to go. you can now write your newly created username and password in the loginwindow and login to your mailbox.
 in your inbox you should start with an empty folder to write a mail to anyone then click on "File"
 and then click "New" (alternatively then you can also click on the file icon) 
 you should now be able to write a mail to someone just do as the placeholdertext suggests. 
