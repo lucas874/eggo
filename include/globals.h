@@ -92,6 +92,7 @@
 #define REPLY_ERR 18
 #define CONTENT_TRANSMIT 19
 
+
 /*
  * Pop Commands
  */
@@ -104,8 +105,11 @@
 #define POP_DELE 5
 #define POP_NOOP 6
 #define POP_RSET 7
-#define POP_QUIT 8
-#define POP_BAD 9
+#define POP_BAD 8
+#define POP_READ 9
+#define POP_UNRD 10
+#define POP_QUIT 11
+
 
 /*
  * POP FSM states

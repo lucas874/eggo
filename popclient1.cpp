@@ -37,7 +37,7 @@ int main() {
 		if(i == 4) {
 			std::string str = reply.to_string();
 
-			lines = stoi(str.substr(4, str.size()-5));
+			lines = stoi(str.substr(6, str.size()-7));
 
         		std::cout << "Received " << reply.to_string(); 	
         		std::cout << std::endl;

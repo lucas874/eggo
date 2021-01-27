@@ -26,7 +26,8 @@ class User {
 		std::string getInboxPath();
 		
 		void addMail(PieceOfMail* p);
-
+		void addSent(PieceOfMail* p);
+		
 		int getInboxSize();
 		
 		int getInboxSizeOctets();
@@ -42,5 +43,6 @@ class User {
 		std::string password;
 		std::string path;	
 		std::vector<PieceOfMail*> inbox;
+		std::vector<PieceOfMail*> sent;
 };
 #endif

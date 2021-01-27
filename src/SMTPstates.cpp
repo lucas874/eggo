@@ -210,7 +210,12 @@ void SMTPQuit::Action(SMTPsession* sc, SMTPevent* e) {
 	 */
 	for(auto &itr : sc->rcpt)
 		sc->_uc->addMailToInbox(itr, sc->curmail); 
+	
+	User* sender = sc->_uc->LookUp(sc->senderUsername);
 
+	if(sender != nullptr)
+		sc->_uc->addMailToSent(sender, sc->curmail);
+ 
 	// Tell client that server acknowledges that transmission is over.	
 	sc->Reply(SERVICE_CLOSING);
   	sc->run = false; // Stop running Run() loop of session

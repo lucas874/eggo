@@ -24,6 +24,10 @@ void User::addMail(PieceOfMail* p) {
 	inbox.push_back(p);
 }
 
+void User::addSent(PieceOfMail* p) {
+	sent.push_back(p);
+}
+
 int User::getInboxSize() {
 	return inbox.size();
 }

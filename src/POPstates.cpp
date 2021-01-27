@@ -86,7 +86,6 @@ void POPtransaction::transmitContent(POPsession *ps, int index) {
     		ps->Reply(CONTENT_TRANSMIT, i);
 	}
 }
-
 /*
  * Handle incoming commands when in the TRANSACTION state
  *
@@ -119,6 +118,10 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 				else {
 					buffer = std::to_string(index);
 					buffer += " ";
+				        if(ps->getCurrentUser()->getReadStatus(index))
+					        buffer += "T ";
+					else
+					        buffer += "F ";
 					buffer += std::to_string(tmp);
 					replycode = REPLY_OK;
 				}	
@@ -129,10 +132,16 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 					buffer = "Inbox empty";
 				}
 				else {
+				  buffer = std::to_string(sz);
+				  buffer += " messages\n";
 					for(int i = 0; i < sz + ps->markedAsDeleted.size(); ++i) {
 						if(ps->markedAsDeleted.find(i) == ps->markedAsDeleted.end()) {
 							buffer += std::to_string(i);
 							buffer += " ";
+							if(ps->getCurrentUser()->getReadStatus(i))
+							        buffer += "T ";
+							else
+							        buffer += "F ";
 							buffer += std::to_string(ps->getCurrentUser()->getMailSize(i));
 							if(i == sz + ps->markedAsDeleted.size() - 1)
 							{} else
@@ -161,8 +170,11 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 					
 				}
 				else {
-					buffer = std::to_string(tmp);
-					//buffer += " lines.";
+				        if(ps->getCurrentUser()->getReadStatus(index))
+					        buffer = "T ";
+					else
+					        buffer = "F ";
+					buffer += std::to_string(tmp);
 					ps->Reply(REPLY_OK, buffer);
 					transmitContent(ps, index);
 					return;
@@ -215,9 +227,66 @@ void POPtransaction::Action(POPsession* ps, POPevent* e) {
 			buffer = "";
 			replycode = REPLY_OK;
 			break;
+
+		// Handle READ command
+	        case POP_READ:
+	                if(e->getData().length() != 0) {
+				int index = std::stoi(e->getData());
+				int tmp = ps->getCurrentUser()->getMailSize(index);
+				if(tmp == -1 || ps->markedAsDeleted.find(index) != ps->markedAsDeleted.end()) {
+					buffer = "No such mail exists.";
+					replycode = REPLY_ERR;
+				} else {
+					buffer = "";
+					replycode = REPLY_OK;
+					ps->getCurrentUser()->markAsRead(index);
+				}	                        	                        
+			} else {
+				buffer = "Please provide an argument.";
+				replycode = REPLY_ERR;
+			}
+			break;
+
+                // Handle UNRD command
+	        case POP_UNRD:
+	                if(e->getData().length() != 0) {
+				int index = std::stoi(e->getData());
+				int tmp = ps->getCurrentUser()->getMailSize(index);
+				if(tmp == -1 || ps->markedAsDeleted.find(index) != ps->markedAsDeleted.end()) {
+					buffer = "No such mail exists.";
+					replycode = REPLY_ERR;
+				} else {
+					buffer = "";
+					replycode = REPLY_OK;
+					ps->getCurrentUser()->markAsUnread(index);
+				}	                        	                        
+			} else {
+				buffer = "Please provide an argument.";
+				replycode = REPLY_ERR;
+			}
+			break;
+
+		// Handle QUIT command
+	        case POP_QUIT:
+			ChangeState(ps, POP_STATE_UPDATE);
+			
+			int size = ps->currentUser->getInboxSize();
+			if(size > 0) {
+				buffer = "POP3 server signing off (";
+				buffer += std::to_string(size);
+				buffer += " message(s) left)\n";
+			}
+			else {
+				buffer = "POP3 server signing off (maildrop empty)";
+			}
+			replycode = REPLY_OK;
+		        break;	  
 	}
+	
 	ps->Reply(replycode, buffer);
 }
+
+
 
 // Public method for changing state
 void POPtransaction::ChangeState(POPsession* ps, int n) {
@@ -264,5 +333,4 @@ void POPupdate::ChangeState(POPsession* ps, int n) {
 int POPupdate::getStateNo() {
 	return stateNo;
 }
-
 

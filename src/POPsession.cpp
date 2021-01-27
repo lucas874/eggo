@@ -170,5 +170,3 @@ void POPsession::setCurrentUser(User* user) {
 User* POPsession::getCurrentUser() {
 	return currentUser;
 }
-
-

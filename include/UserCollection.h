@@ -15,6 +15,7 @@ public:
 
   User* LookUp(std::string);
   void addMailToInbox(User*, PieceOfMail*);
+  void addMailToSent(User*, PieceOfMail*);
 
   void listen();
   void reply();

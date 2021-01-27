@@ -24,9 +24,4 @@ int POPevent::getEventNo() {
 
 int POPevent::getStateNo() {
 	return stateNumber;
-}
-
-
-
-
- 
+} 
