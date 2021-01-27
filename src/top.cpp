@@ -71,10 +71,10 @@ void Top::listen() {
 	connection1->socket.close();
 	connection2->socket.close();
 	connection3->socket.close();
-
-	connection1->context.close();
-	connection2->context.close();
-	connection3->context.close();
+	
+	zmq_ctx_destroy(&connection1->context);
+	zmq_ctx_destroy(&connection2->context);
+	zmq_ctx_destroy(&connection3->context);
 }
 
 std::vector<POPstate*> Top::initializePOPstates() {

@@ -42,11 +42,6 @@ target_link_libraries(POPclient3 cppzmq)
 add_executable(addUser addusertest.cpp)
 target_link_libraries(addUser cppzmq)
 
-add_executable(UnitTests UnitTests.cpp)
-target_link_libraries(UnitTests maillib)
-target_link_libraries(UnitTests cppzmq)
-target_link_libraries(UnitTests mailuserlib)
-
 add_executable(server main.cpp)
 target_link_libraries(server maillib)
 target_link_libraries(server cppzmq)
