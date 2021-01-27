@@ -2,15 +2,14 @@
 #include <string>
 #include <zmq.hpp>
 #include <ctime>
-#define N 996
+#define N 1000
 
 
 int main() {
 
 	std::cout << "Creating "<< N << " users" << std::endl;
 	std::cout << "From each user a message is sent to the " << N-1 << " other users" << std::endl;
-	std::cout << "We check if each user has " << N-1 << " messages in the inbox" << std::endl;
-	std::cout << "Then we log in as each user, delete the messages and remove the user from the server" << std::endl;
+	std::cout << "We then log in as each user, check if each user has " << N-1 << " messages in the inbox, delete the messages and remove the user from the server" << std::endl;
 	std::cout << "No more output means success" << std::endl;
 	zmq::message_t reply{};
 	

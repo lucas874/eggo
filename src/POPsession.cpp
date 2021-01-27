@@ -137,14 +137,13 @@ POPevent* POPsession::ProcessRequest(std::string buffer) {
 		e = POP_QUIT;
 	else if(CMD.compare("NOOP") == 0) 
 		e = POP_NOOP;
+	else if(CMD.compare("READ") == 0)
+		e = POP_READ;
+	else if(CMD.compare("UNRD") == 0)
+		e = POP_UNRD;
 	else 
 		e = POP_BAD;
 
-	if(currentState->getStateNo() == 0 && e == POP_QUIT) {
-		//Reply(QUIT_AUTH_OK);
-	       	// Handle this. Close properly, destroy current POPsession object.	
-	}
-	
 	// create the POPevent with the specified event and data, return it
 	POPevent* event = new POPevent(e, data);
 	return event;	
