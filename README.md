@@ -38,7 +38,7 @@ Now that the server is built it can be started with ./server from the build fold
 
 3. Now we can try out the GUI.<br>
     cd eggoinbox<br>
-    qmake ..<br>
+    qmake<br>
     make<br>
  
 (if it doesn't want to make then spam "qmake .." 3 times consecutively and afterwards write
