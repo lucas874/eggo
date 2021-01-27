@@ -3,7 +3,7 @@ Software Engineering Project for CE students fall 2020, Aarhus Universitet<br>
 # Eggo Enterprises
 
 How to build:<br>
-NB. This guide assumes that the machine on which software is to be built is using a Linux operating system. To build the system the machine will need a C++ compiler, cmake, libtool and git. If you are unsure whether this is install. If you are using Ubuntu this can be done with the package manager by issuing the command: sudo apt-get install build-essential libtool cmake<br> 
+NB. This guide assumes that the machine on which software is to be built is using a Linux operating system. To build the system the machine will need a C++ compiler, cmake, libtool and git. If you are unsure whether this is installed you can download these using a package mangager. If you are using Ubuntu this can be done by issuing the command: sudo apt-get install build-essential libtool cmake<br> 
 
 1. The system requires ZeroMQ for communicating over network. To install the ZeroMQ library two things must be downloaded and built. Open a terminal and type these commands:<br>
     git clone https://github.com/zeromq/libzmq.git<br>
