@@ -33,7 +33,25 @@ NB. This guide assumes that the machine on which software is to be built is usin
     cmake ..<br>
     make<br> 
     
-  
+    
+Now that the server is built it can be started with ./server from the build folder. Open a new terminal and cd to eggo. Run the command unzip eggoinbox.zip.<br>
 
+3. Now we can try out the GUI.<br>
+    cd eggoinbox<br>
+    qmake ..<br>
+    make<br>
+ 
+(if it doesn't want to make then spam "qmake .." 3 times consecutively and afterwards write
+"make" this usually works)
+once the project has been made then write
+	./eggoinbox
 
-
+A login window should pop up in the top left corner of your screen to login then you will 
+first have to register a user. Registering a user is fairly simple first you have to click on the 
+register button and afterwards then the register window should pop-up do as the placeholdertext 
+tells you and click register. Now you should have a user good to go. you can now write your newly 
+created username and password in the loginwindow and login to your mailbox.
+in your inbox you should start with an empty folder to write a mail to anyone then click on "File"
+and then click "New" (alternatively then you can also click on the file icon) 
+you should now be able to write a mail to someone just do as the placeholdertext suggests. 
+You can play around with the different features for fun.
