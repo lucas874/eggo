@@ -15,7 +15,8 @@ void SMTPInit::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPInit::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n]) // If transition is allowed 
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n]) // If transition is allowed 
 		sc->currentState = sc->states[n]; // Change state. If transition not allowed
 						  // no transition occurs.
 }
@@ -42,7 +43,8 @@ void SMTPHelo::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPHelo::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n]) // Change state if transition allowed
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n]) // Change state if transition allowed
 		sc->currentState = sc->states[n];
 }
 
@@ -61,11 +63,7 @@ void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
 			sc->Reply(SYNTAX_ERROR);
 			return;
 		}
-		/*
-  		int i = 0;
-  		while(str[i] != '@')
-    			i++;
-		*/
+	
 		sc->setSenderUsername(str.substr(0,pos));
 		sc->curmail = new PieceOfMail();
   		sc->curmail->setsender(str);
@@ -77,7 +75,8 @@ void SMTPMail::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPMail::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n])  // Change state if allowed, else do not change state
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n])  // Change state if allowed, else do not change state
 		sc->currentState = sc->states[n];
 }
 
@@ -137,7 +136,8 @@ void SMTPRcpt::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPRcpt::ChangeState(SMTPsession* sc, int n) { // Change state
-	if(allowedTransitions[n])
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n])
 		sc->currentState = sc->states[n];
 }
 
@@ -170,7 +170,8 @@ void SMTPData::Action(SMTPsession* sc, SMTPevent* e) {
 }
 	
 void SMTPData::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n])
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n])
 		sc->currentState = sc->states[n];
 }
 
@@ -193,7 +194,8 @@ void SMTPRset::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPRset::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n])
+	if(n == SUBJ) {} 
+	else if(allowedTransitions[n])
 		sc->currentState = sc->states[n];
 }
 int SMTPRset::getStateNo() {
@@ -222,7 +224,8 @@ void SMTPQuit::Action(SMTPsession* sc, SMTPevent* e) {
 }
 
 void SMTPQuit::ChangeState(SMTPsession* sc, int n) {
-	if(allowedTransitions[n])
+	if(n == SUBJ) {}
+	else if(allowedTransitions[n])
 		sc->currentState = sc->states[n];
 }
 
